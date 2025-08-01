@@ -1,0 +1,16 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "A dynamic, customizable portfolio website for mobile developers with Firebase integration for data persistence.",
+  "main": "firebase-config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+
+  "devDependencies": {
+    "tailwindcss": "^4.1.11"
+  }
+}

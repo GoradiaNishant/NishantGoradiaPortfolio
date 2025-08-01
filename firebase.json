@@ -1,0 +1,32 @@
+{
+  "hosting": [
+    {
+      "target": "portfolio-nishant-goradiya",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "README.md",
+        "portfolio.code-workspace"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "headers": [
+        {
+          "source": "**/*.@(js|css)",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "max-age=31536000"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+} 
