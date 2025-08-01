@@ -3,7 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- SEO Meta Tags for Admin (No Index) -->
     <title>Portfolio Admin Dashboard</title>
+    <meta name="title" content="Portfolio Admin Dashboard">
+    <meta name="description" content="Administrative dashboard for portfolio management">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="author" content="Mobile Developer Portfolio">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Portfolio Admin Dashboard">
+    <meta property="og:description" content="Administrative dashboard for portfolio management">
+    <meta property="og:site_name" content="Mobile Developer Portfolio">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//www.gstatic.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <!-- Firebase SDK -->
@@ -629,7 +665,7 @@
                 console.log('🔍 Tech Stack field element:', document.getElementById('project-tech-stack'));
                 console.log('🔍 Development Process field element:', document.getElementById('project-development-process'));
                 console.log('🔍 Full project object being sent to Firebase:', JSON.stringify(project, null, 2));
-                
+
                 // Add to Firebase
                 const success = await FirebaseDB.addProject(project);
                 

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Disallow admin pages from being indexed
+Disallow: /admin.html
+Disallow: /firebase-config.js
+Disallow: /local-storage-config.js
+
+# Allow sitemap
+Sitemap: https://goradianishant.github.io/NishantGoradiaPortfolio/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1 
