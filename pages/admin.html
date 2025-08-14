@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        // Dynamic base href for different environments
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const baseHref = isLocalhost ? '/' : 'https://goradianishant.github.io/NishantGoradiaPortfolio/';
+        document.write('<base href="' + baseHref + '">');
+    </script>
     
     <!-- SEO Meta Tags for Admin (No Index) -->
     <title>Portfolio Admin Dashboard</title>
