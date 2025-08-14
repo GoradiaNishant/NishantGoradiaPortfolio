@@ -149,7 +149,7 @@ class ImageCache {
 
     // Get fallback image
     getFallbackImage() {
-        return '../assets/images/project_image_placeholder.webp';
+        return 'assets/images/project_image_placeholder.webp';
     }
 
     // Preload images for better performance
@@ -201,7 +201,7 @@ function loadImageWithCache(imgElement, url, options = {}) {
         onLoad = null,
         onError = null,
         onRetry = null,
-        fallbackUrl = '../assets/images/project_image_placeholder.webp'
+                    fallbackUrl = 'assets/images/project_image_placeholder.webp'
     } = options;
 
     // If not a Google CDN URL, load normally

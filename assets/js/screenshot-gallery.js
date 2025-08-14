@@ -73,7 +73,7 @@ async function loadScreenshots(project) {
                 updateProgress(); // Final update
 
                 // Only show warning if there are actually failed images
-                const failedImages = document.querySelectorAll('#screenshots-gallery img[src="../assets/images/appstore.png"]');
+                const failedImages = document.querySelectorAll('#screenshots-gallery img[src="assets/images/appstore.png"]');
                 if (failedImages.length > 0) {
                     const helpMessage = document.createElement('div');
                     helpMessage.className = 'mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg';
@@ -194,7 +194,7 @@ function createScreenshotCard(screenshot, index, loaded = true) {
                     </div>
                     
                     <!-- Screenshot Image (Full Size) -->
-                    <img src="../assets/images/appstore.png" alt="${screenshot.title}" class="w-full h-full object-contain opacity-0 transition-opacity duration-300" 
+                    <img src="assets/images/appstore.png" alt="${screenshot.title}" class="w-full h-full object-contain opacity-0 transition-opacity duration-300" 
                          data-screenshot-index="${index}" 
                          data-original-src="${screenshot.url}"
                          data-description="${screenshot.description || ''}"
@@ -490,7 +490,7 @@ function setupScreenshotNavigation() {
 
 // Manual function to retry loading failed images with intelligent rate limiting
 async function retryFailedImages() {
-    const failedImages = document.querySelectorAll('#screenshots-gallery img[src="../assets/images/appstore.png"]');
+            const failedImages = document.querySelectorAll('#screenshots-gallery img[src="assets/images/appstore.png"]');
     console.log(`🔄 Retrying ${failedImages.length} failed images with intelligent rate limiting...`);
 
     if (failedImages.length === 0) {

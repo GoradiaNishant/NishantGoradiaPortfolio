@@ -52,7 +52,7 @@ async function loadProjectData() {
                         const playStoreLink = document.createElement('a');
                         playStoreLink.href = project.demo;
                         playStoreLink.className = 'hover:opacity-80 transition duration-300';
-                        playStoreLink.innerHTML = `<img src="../assets/images/playstore.png" alt="Get it on Google Play" class="h-12">`;
+                        playStoreLink.innerHTML = `<img src="assets/images/playstore.png" alt="Get it on Google Play" class="h-12">`;
                         storeButtonsContainer.appendChild(playStoreLink);
                     }
 
@@ -61,7 +61,7 @@ async function loadProjectData() {
                         const appStoreLink = document.createElement('a');
                         appStoreLink.href = project.source;
                         appStoreLink.className = 'hover:opacity-80 transition duration-300';
-                        appStoreLink.innerHTML = `<img src="../assets/images/appstore.png" alt="Download on the App Store" class="h-12">`;
+                        appStoreLink.innerHTML = `<img src="assets/images/appstore.png" alt="Download on the App Store" class="h-12">`;
                         storeButtonsContainer.appendChild(appStoreLink);
                     }
                 }
