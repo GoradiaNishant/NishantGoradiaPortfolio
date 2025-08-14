@@ -19,7 +19,7 @@
     <meta property="og:url" content="https://goradianishant.github.io/NishantGoradiaPortfolio/">
     <meta property="og:title" content="Nishant Goradia - Mobile Developer Portfolio | Software Engineer">
     <meta property="og:description" content="Nishant Goradia - Professional mobile developer specializing in Flutter, Compose and Kotlin Multi Platform, and cross-platform app development. View Nishant Goradia's portfolio of innovative mobile applications.">
-    <meta property="og:image" content="https://goradianishant.github.io/NishantGoradiaPortfolio/images/portfolio-og-image.jpg">
+    <meta property="og:image" content="images/main_bg.webp">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Nishant Goradia Portfolio">
@@ -30,7 +30,7 @@
     <meta property="twitter:url" content="https://goradianishant.github.io/NishantGoradiaPortfolio/">
     <meta property="twitter:title" content="Nishant Goradia - Mobile Developer Portfolio | Software Engineer">
     <meta property="twitter:description" content="Nishant Goradia - Professional mobile developer specializing in Flutter, Compose and Kotlin Multi Platform, and cross-platform app development. View Nishant Goradia's portfolio of innovative mobile applications.">
-    <meta property="twitter:image" content="https://goradianishant.github.io/NishantGoradiaPortfolio/images/portfolio-og-image.jpg">
+    <meta property="twitter:image" content="images/main_bg.webp">
     
     <!-- Additional SEO Meta Tags -->
     <meta name="theme-color" content="#4f46e5">
@@ -78,7 +78,7 @@
             "Firebase",
             "Mobile UI/UX"
         ],
-        "image": "https://goradianishant.github.io/NishantGoradiaPortfolio/images/profile-image.jpg",
+        "image": "images/main_bg.webp",
         "worksFor": {
             "@type": "Organization",
             "name": "Freelance Mobile Developer"
@@ -134,6 +134,78 @@
         }
         .smooth-scroll {
             scroll-behavior: smooth;
+        }
+        
+        /* Project card and image improvements */
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            width: 280px;
+            flex-shrink: 0;
+            height: auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(60deg, #2245be, #b949c1) border-box;
+            border-radius: 8px;
+        }
+        
+        .project-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .project-image-container {
+            position: relative;
+            overflow: hidden;
+            background: #f3f4f6;
+            width: 100%;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .project-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background-color: #f9fafb;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        /* Responsive adjustments for project cards */
+        @media (max-width: 640px) {
+            .project-card {
+                width: 250px;
+            }
+        }
+        
+        .project-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .project-image.loading {
+            opacity: 0.6;
+        }
+        
+        .project-image.error {
+            opacity: 0.5;
+            filter: grayscale(50%);
+        }
+        
+        /* Loading skeleton for project images */
+        .project-image-skeleton {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
         
         /* Accessibility improvements */
@@ -294,13 +366,17 @@
     <main>
         <section id="home" class="min-h-screen flex items-center justify-center text-white relative overflow-hidden" aria-labelledby="hero-heading">
             <!-- Background Image -->
-            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('images/main_bg.png');" aria-hidden="true"></div>
+            <div class="absolute inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('images/main_bg.webp');" aria-hidden="true"></div>
             
             <!-- Content -->
             <div class="text-center max-w-3xl mx-auto px-4 relative z-10">
                 <h1 id="hero-heading" class="text-4xl md:text-6xl font-bold mb-4">Hi, I'm Nishant Goradia</h1>
                 <p id="hero-tagline" class="text-xl md:text-2xl mb-6">A Passionate Mobile Developer Crafting Seamless Apps</p>
-                <a href="#career" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-100 transition duration-300" aria-label="View my work and projects">View My Work</a>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="#about" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-100 transition duration-300" aria-label="Learn about me">Get to Know Me</a>
+                    <a href="#career" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-100 transition duration-300" aria-label="View career journey">View Career Journey</a>
+                    <a href="#projects" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-semibold hover:bg-indigo-100 transition duration-300" aria-label="View my work and projects">View My Work</a>
+                </div>
             </div>
         </section>
 
@@ -371,23 +447,24 @@
 
 
     <!-- Projects Section -->
-    <section id="projects" class="py-20 bg-gray-100">
+    <section id="projects" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">My Projects</h2>
         </div>
         <div class="overflow-x-auto">
-            <div id="projects-container" class="flex space-x-6 pb-4 pl-12 sm:pl-16 lg:pl-20 pr-12 sm:pr-16 lg:pr-20" style="min-width: max-content;">
+            <div id="projects-container" class="flex space-x-10 pb-10 px-10 sm:px-6 lg:px-6" style="min-width: max-content;">
+
                 <!-- Projects will be loaded dynamically -->
             </div>
         </div>
     </section>
 
     <!-- Resume Section -->
-    <section id="resume" class="py-20 bg-white">
+    <section id="resume" class="py-20 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Resume</h2>
             <div class="text-center">
-                <div class="bg-gray-100 rounded-lg shadow-md p-8 max-w-2xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-8 max-w-2xl mx-auto">
                     <h3 class="text-2xl font-semibold mb-4">Download My Resume</h3>
                     <p class="text-gray-600 mb-6">Get a detailed overview of my experience, skills, and achievements in mobile development.</p>
                     <a id="resume-download" href="#" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 inline-flex items-center">
@@ -402,7 +479,7 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="py-20 bg-gray-100">
+    <section id="contact" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Get in Touch</h2>
             <div class="max-w-lg mx-auto">
@@ -653,14 +730,21 @@
                         console.log(`Project ${index} image:`, project.image);
                         
                         const projectDiv = document.createElement('div');
-                        projectDiv.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300';
-                        projectDiv.style = 'min-width: 350px; max-width: 350px;';
+                        projectDiv.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 project-card';
                         projectDiv.innerHTML = `
-                            <img src="${project.image || 'https://picsum.photos/400/250'}" alt="${project.name}" class="w-full h-48 object-cover">
-                            <div class="p-6">
+                            <div class="project-image-container">
+                                <div class="project-image-skeleton" id="skeleton-${index}"></div>
+                                <img src="${project.image || 'https://picsum.photos/400/250'}" 
+                                     alt="${project.name}" 
+                                     class="project-image loading"
+                                     id="project-image-${index}"
+                                     onload="handleProjectImageLoad(${index})"
+                                     onerror="handleProjectImageError(${index})">
+                            </div>
+                            <div class="p-4 flex flex-col flex-grow bg-gray-100">
                                 <h3 class="text-xl font-semibold mb-2">${project.name}</h3>
-                                <p class="text-gray-600 mb-4">${project.description}</p>
-                                <a href="project-detail.html?project=${index}" class="text-indigo-600 font-semibold hover:underline">View Details</a>
+                                <p class="text-gray-600 mb-4 flex-grow">${project.description}</p>
+                                <a href="project-detail.html?project=${index}" class="text-indigo-600 font-semibold hover:underline mt-auto">View Details</a>
                             </div>
                         `;
                         projectsContainer.appendChild(projectDiv);
@@ -738,6 +822,43 @@
                 overlay.style.opacity = '1';
                 mainContent.classList.remove('hidden');
             }, 300);
+        }
+
+        // Handle project image load
+        function handleProjectImageLoad(index) {
+            const image = document.getElementById(`project-image-${index}`);
+            const skeleton = document.getElementById(`skeleton-${index}`);
+            
+            if (image) {
+                image.classList.remove('loading');
+                image.classList.add('loaded');
+            }
+            
+            if (skeleton) {
+                skeleton.style.display = 'none';
+            }
+            
+            console.log(`✅ Project image ${index} loaded successfully`);
+        }
+
+        // Handle project image error
+        function handleProjectImageError(index) {
+            const image = document.getElementById(`project-image-${index}`);
+            const skeleton = document.getElementById(`skeleton-${index}`);
+            
+            if (image) {
+                image.classList.remove('loading');
+                image.classList.add('error');
+                // Set a fallback image
+                image.src = `https://picsum.photos/400/250?random=${index + 100}`;
+                image.alt = 'Project screenshot';
+            }
+            
+            if (skeleton) {
+                skeleton.style.display = 'none';
+            }
+            
+            console.log(`❌ Project image ${index} failed to load, using fallback`);
         }
 
         // Load data when page loads

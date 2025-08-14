@@ -387,6 +387,15 @@
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                         <textarea id="screenshot-description" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Brief description of the screenshot"></textarea>
                                     </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Orientation</label>
+                                        <select id="screenshot-orientation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="auto">Auto-detect (recommended)</option>
+                                            <option value="portrait">Portrait (Mobile)</option>
+                                            <option value="landscape">Landscape (Tablet/Desktop)</option>
+                                        </select>
+                                        <p class="text-sm text-gray-500 mt-1">Choose orientation or let the system auto-detect from image dimensions</p>
+                                    </div>
                                     <button type="button" onclick="addScreenshot()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300">
                                         Add Screenshot
                                     </button>
@@ -1221,9 +1230,11 @@
             const urlInput = document.getElementById('screenshot-url');
             const titleInput = document.getElementById('screenshot-title');
             const descriptionInput = document.getElementById('screenshot-description');
+            const orientationInput = document.getElementById('screenshot-orientation');
 
             const title = titleInput.value.trim();
             const description = descriptionInput.value.trim();
+            const orientation = orientationInput.value;
 
             if (!title || !description) {
                 alert('Please enter both title and description for the screenshot.');
@@ -1252,7 +1263,8 @@
             const screenshot = {
                 title: title,
                 description: description,
-                url: imageData
+                url: imageData,
+                orientation: orientation === 'auto' ? null : orientation // Only store if explicitly set
             };
 
             currentScreenshots.push(screenshot);
@@ -1372,6 +1384,7 @@
             document.getElementById('screenshot-url').value = '';
             document.getElementById('screenshot-title').value = '';
             document.getElementById('screenshot-description').value = '';
+            document.getElementById('screenshot-orientation').value = 'auto';
         }
 
         // Clear all screenshots
@@ -1395,19 +1408,28 @@
         function addTestScreenshots() {
             const testScreenshots = [
                 {
-                    title: 'Test Screenshot 1',
-                    description: 'First test screenshot',
-                    url: 'https://picsum.photos/300/600?random=1'
+                    title: 'Mobile Home Screen',
+                    description: 'Portrait mobile screenshot',
+                    url: 'https://picsum.photos/300/600?random=1',
+                    orientation: 'portrait'
                 },
                 {
-                    title: 'Test Screenshot 2',
-                    description: 'Second test screenshot',
-                    url: 'https://picsum.photos/300/600?random=2'
+                    title: 'Tablet Dashboard',
+                    description: 'Landscape tablet screenshot',
+                    url: 'https://picsum.photos/600/400?random=2',
+                    orientation: 'landscape'
                 },
                 {
-                    title: 'Test Screenshot 3',
-                    description: 'Third test screenshot',
-                    url: 'https://picsum.photos/300/600?random=3'
+                    title: 'Desktop Settings',
+                    description: 'Landscape desktop screenshot',
+                    url: 'https://picsum.photos/800/450?random=3',
+                    orientation: 'landscape'
+                },
+                {
+                    title: 'Mobile Profile',
+                    description: 'Portrait mobile screenshot',
+                    url: 'https://picsum.photos/300/600?random=4',
+                    orientation: 'portrait'
                 }
             ];
             

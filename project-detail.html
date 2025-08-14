@@ -187,6 +187,45 @@
             color: #4f46e5;
             font-weight: 500;
         }
+        
+        /* Screenshot card base styles */
+        .screenshot-card {
+            flex-shrink: 0;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot-card:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Portrait screenshots (mobile) */
+        .screenshot-card.portrait {
+            width: 256px;
+            height: 456px; /* 9:16 aspect ratio */
+        }
+        
+        /* Landscape screenshots (tablet/desktop) */
+        .screenshot-card.landscape {
+            width: 400px;
+            height: 225px; /* 16:9 aspect ratio */
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .screenshot-card.portrait {
+                width: 200px;
+                height: 356px;
+            }
+            
+            .screenshot-card.landscape {
+                width: 300px;
+                height: 169px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800 smooth-scroll">
@@ -283,7 +322,10 @@
     <!-- Screenshots -->
     <section class="py-16 bg-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center mb-12">App Screenshots</h2>
+                            <h2 class="text-3xl font-bold text-center mb-12">App Screenshots</h2>
+                <div class="text-center mb-6">
+                    <p class="text-sm text-gray-500 image-loading-progress">Images loading...</p>
+                </div>
             
             <!-- Screenshot Gallery Container -->
             <div class="relative">
@@ -319,13 +361,87 @@
 
     <!-- Screenshot Modal -->
     <div id="screenshot-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-4">
-        <div class="relative">
-            <button id="close-modal" class="absolute top-4 right-4 text-white hover:text-gray-300 z-10">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="relative max-w-4xl w-full">
+            <!-- Close Button -->
+            <button id="close-modal" class="absolute top-4 right-4 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            <img id="modal-image" src="" alt="" class="max-w-full max-h-screen object-contain">
+            
+            <!-- Navigation Controls -->
+            <button id="modal-prev" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-3 transition-all duration-300 hover:bg-opacity-75">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            
+            <button id="modal-next" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-3 transition-all duration-300 hover:bg-opacity-75">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+            
+            <!-- Mobile Phone Frame Container -->
+            <div class="relative mx-auto" style="max-width: 375px; max-height: 812px;">
+                <!-- Phone Frame -->
+                <div class="relative bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                    <!-- Phone Screen -->
+                    <div class="bg-gray-800 rounded-[2.5rem] overflow-hidden relative" style="width: 375px; height: 812px;">
+                        
+                        <!-- Screenshot Image -->
+                        <img id="modal-image" src="" alt="" class="w-full h-full object-cover opacity-0 transition-opacity duration-300" 
+                             onload="console.log('✅ Modal image loaded successfully:', this.src); this.style.opacity='1'; hideModalLoading();" 
+                             onerror="console.log('❌ Modal image failed to load:', this.src); this.style.opacity='1'; hideModalLoading(); showFailedImageInModal();">
+                        
+                        <!-- Loading State for Modal -->
+                        <div id="modal-loading" class="absolute inset-0 flex items-center justify-center bg-gray-700 z-10">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+                                <p class="text-white text-lg">Loading screenshot...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Failed Image State (shows placeholder in phone frame) -->
+                        <div id="modal-failed" class="absolute inset-0 bg-gray-600 flex items-center justify-center z-5 hidden">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-300 text-lg font-medium">Screenshot Unavailable</p>
+                                <p class="text-gray-400 text-sm mt-2">This screenshot failed to load</p>
+                                <button onclick="retryCurrentModalImage()" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                    Retry This Screenshot
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Status Bar Overlay -->
+                        <div class="absolute top-0 left-0 right-0 h-8 bg-black bg-opacity-80 flex items-center justify-between px-6 z-15">
+                            <div class="flex items-center space-x-1">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div class="text-white text-xs font-medium">9:41</div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-4 h-2 bg-white rounded-sm"></div>
+                                <div class="w-1 h-1 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Home Indicator Overlay -->
+                        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white rounded-full opacity-80"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Screenshot Info -->
+            <div id="modal-info" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center bg-black bg-opacity-50 rounded-lg px-4 py-2 z-20">
+                <h3 id="modal-title" class="font-semibold text-lg"></h3>
+                <p id="modal-description" class="text-sm text-gray-300"></p>
+                <p id="modal-counter" class="text-xs text-gray-400 mt-1"></p>
+            </div>
         </div>
     </div>
 
@@ -784,16 +900,95 @@
                 
                 if (project.screenshots && project.screenshots.length > 0) {
                     console.log('Found screenshots:', project.screenshots);
+                    
+                    // Show screenshots immediately with lazy loading
+                    gallery.innerHTML = '';
+                    
+                    // Create and display all screenshot cards immediately
                     project.screenshots.forEach((screenshot, index) => {
-                        console.log('Creating screenshot card:', screenshot);
-                        const screenshotCard = createScreenshotCard(screenshot, index);
-                        if (screenshotCard) { // Only append if card was created successfully
+                        const screenshotCard = createScreenshotCard(screenshot, index, true); // Assume loaded initially
+                        if (screenshotCard) {
                             gallery.appendChild(screenshotCard);
                         }
                     });
                     
+                    // Track which images actually loaded successfully
+                    const results = project.screenshots.map((screenshot, index) => ({ 
+                        screenshot, 
+                        index, 
+                        loaded: false // Will be updated as images load
+                    }));
+                    
                     // Setup navigation buttons
                     setupScreenshotNavigation();
+                    
+                    // Monitor image loading progress and show helpful message if needed
+                    let loadedCount = 0;
+                    const totalCount = project.screenshots.length;
+                    
+                    // Update progress as images load
+                    const updateProgress = () => {
+                        // Count only the actual screenshot images, not any other images on the page
+                        const screenshotImages = document.querySelectorAll('#screenshots-gallery img[data-screenshot-index]');
+                        const successfulImages = Array.from(screenshotImages).filter(img => 
+                            img.src.includes('play-lh.googleusercontent.com') && !img.src.includes('images/appstore.png')
+                        );
+                        loadedCount = successfulImages.length;
+                        
+                        updateImageLoadingProgress(loadedCount, totalCount);
+                        
+                        // If all images are loaded, update the progress text
+                        if (loadedCount === totalCount) {
+                            const progressText = document.querySelector('.image-loading-progress');
+                            if (progressText) {
+                                progressText.textContent = `All ${totalCount} images loaded successfully!`;
+                                progressText.className = 'text-sm text-green-600 font-medium';
+                            }
+                        }
+                    };
+                    
+                    // Check progress every 500ms
+                    const progressInterval = setInterval(updateProgress, 500);
+                    
+                    // Stop checking after 10 seconds
+                    setTimeout(() => {
+                        clearInterval(progressInterval);
+                        updateProgress(); // Final update
+                        
+                        // Only show warning if there are actually failed images
+                        const failedImages = document.querySelectorAll('#screenshots-gallery img[src="images/appstore.png"]');
+                        if (failedImages.length > 0) {
+                            const helpMessage = document.createElement('div');
+                            helpMessage.className = 'mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg';
+                            helpMessage.innerHTML = `
+                                <div class="flex items-start space-x-3">
+                                    <svg class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <div class="flex-1">
+                                        <h3 class="text-sm font-medium text-yellow-800">Some screenshots failed to load</h3>
+                                        <p class="text-sm text-yellow-700 mt-1">
+                                            ${failedImages.length} of ${totalCount} screenshots couldn't be loaded due to rate limiting from Google's servers. 
+                                            This is a temporary issue and usually resolves itself. <strong>Tip: Wait a few minutes before retrying to avoid further rate limiting.</strong>
+                                        </p>
+                                        <div class="mt-3 flex space-x-3">
+                                            <button onclick="retryFailedImages()" class="text-sm bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition-colors">
+                                                Retry Failed Images
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            // Remove any existing help message
+                            const existingHelp = document.querySelector('.bg-yellow-50');
+                            if (existingHelp) {
+                                existingHelp.remove();
+                            }
+                            
+                            gallery.parentNode.insertBefore(helpMessage, gallery.nextSibling);
+                        }
+                    }, 10000); // Check after 10 seconds
                 } else {
                     console.log('No screenshots found for project');
                     // Show placeholder if no screenshots
@@ -817,7 +1012,7 @@
         }
 
         // Create screenshot card
-        function createScreenshotCard(screenshot, index) {
+        function createScreenshotCard(screenshot, index, loaded = true) {
             try {
                 console.log('Creating screenshot card with data:', screenshot);
                 
@@ -826,17 +1021,48 @@
                     return null;
                 }
                 
+                // Determine orientation based on screenshot data or default to portrait
+                const isLandscape = screenshot.orientation === 'landscape' || 
+                                   (screenshot.width && screenshot.height && screenshot.width > screenshot.height);
+                
                 const card = document.createElement('div');
-                card.className = 'flex-shrink-0 w-56 h-112 rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-105 transition duration-300';
+                card.className = `screenshot-card ${isLandscape ? 'landscape' : 'portrait'}`;
                 card.innerHTML = `
                     <div class="relative w-full h-full bg-gray-900 rounded-lg p-2">
-                        <!-- Phone Frame -->
+                        <!-- Device Frame -->
                         <div class="w-full h-full bg-gray-800 rounded-lg overflow-hidden relative">
-                            <!-- Screenshot Image (Full Size) -->
-                            <img src="${screenshot.url}" alt="${screenshot.title}" class="w-full h-full object-contain mt-6" data-screenshot-index="${index}">
+                            <!-- Loading State (shown initially) -->
+                            <div class="absolute inset-0 bg-gray-700 flex items-center justify-center z-20" id="loading-${index}">
+                                <div class="text-center">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-400 mx-auto mb-2"></div>
+                                    <p class="text-gray-300 text-xs">Loading...</p>
+                                </div>
+                            </div>
                             
-                            <!-- Status Bar Overlay -->
-                            <div class="absolute top-0 left-0 right-0 h-6 bg-black bg-opacity-80 flex items-center justify-between px-3 z-10">
+                            <!-- Screenshot Image (Full Size) -->
+                            <img src="${screenshot.url}" alt="${screenshot.title}" class="w-full h-full object-contain opacity-0 transition-opacity duration-300" 
+                                 data-screenshot-index="${index}" 
+                                 data-original-src="${screenshot.url}"
+                                 data-description="${screenshot.description || ''}"
+                                 data-orientation="${isLandscape ? 'landscape' : 'portrait'}"
+                                 onerror="this.onerror=null; this.src='images/appstore.png'; this.alt='Screenshot not available'; console.log('Failed to load screenshot:', '${screenshot.url}'); this.classList.add('opacity-50'); hideLoadingState(${index}); showFailedState(${index});"
+                                 onload="handleScreenshotLoad(this, ${index}, '${screenshot.url}');">
+                            
+                            <!-- Failed State Indicator (shown when image fails) -->
+                            <div class="absolute inset-0 bg-red-500 bg-opacity-20 flex items-center justify-center z-15 hidden" id="failed-${index}" style="background: rgba(239, 68, 68, 0.3);">
+                                <div class="text-center">
+                                    <svg class="w-8 h-8 text-red-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    <p class="text-red-600 text-xs font-medium">Failed to load</p>
+                                    <button onclick="retrySingleImage(${index})" class="mt-2 text-xs bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700 transition-colors">
+                                        Retry
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Status Bar Overlay (Portrait Only) -->
+                            <div class="absolute top-0 left-0 right-0 h-6 bg-black bg-opacity-80 flex items-center justify-between px-3 z-10 ${isLandscape ? 'hidden' : ''}">
                                 <div class="flex items-center space-x-1">
                                     <div class="w-2 h-2 bg-white rounded-full"></div>
                                     <div class="w-2 h-2 bg-white rounded-full"></div>
@@ -849,8 +1075,8 @@
                                 </div>
                             </div>
                             
-                            <!-- Home Indicator Overlay -->
-                            <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white rounded-full opacity-80"></div>
+                            <!-- Home Indicator Overlay (Portrait Only) -->
+                            <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white rounded-full opacity-80 ${isLandscape ? 'hidden' : ''}"></div>
                         </div>
                     </div>
                 `;
@@ -868,6 +1094,65 @@
             }
         }
 
+        // Handle screenshot image load and orientation detection
+        function handleScreenshotLoad(img, index, originalUrl) {
+            try {
+                console.log('Screenshot loaded successfully:', originalUrl);
+                
+                // Remove opacity and show image
+                img.classList.remove('opacity-50');
+                img.style.opacity = '1';
+                
+                // Hide loading state
+                hideLoadingState(index);
+                hideFailedState(index);
+                
+                // Detect actual orientation from image dimensions
+                const isLandscape = img.naturalWidth > img.naturalHeight;
+                const currentOrientation = img.dataset.orientation;
+                
+                // Update orientation if it differs from initial assumption
+                if ((isLandscape && currentOrientation !== 'landscape') || 
+                    (!isLandscape && currentOrientation !== 'portrait')) {
+                    
+                    console.log(`Orientation updated for screenshot ${index}: ${currentOrientation} -> ${isLandscape ? 'landscape' : 'portrait'}`);
+                    
+                    // Update the card class
+                    const card = img.closest('.screenshot-card');
+                    if (card) {
+                        card.classList.remove('portrait', 'landscape');
+                        card.classList.add(isLandscape ? 'landscape' : 'portrait');
+                    }
+                    
+                    // Update the image data attribute
+                    img.dataset.orientation = isLandscape ? 'landscape' : 'portrait';
+                    
+                    // Update status bar and home indicator visibility
+                    const statusBar = card?.querySelector('.absolute.top-0');
+                    const homeIndicator = card?.querySelector('.absolute.bottom-2');
+                    
+                    if (statusBar) {
+                        statusBar.classList.toggle('hidden', isLandscape);
+                    }
+                    if (homeIndicator) {
+                        homeIndicator.classList.toggle('hidden', isLandscape);
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Error in handleScreenshotLoad:', error);
+                // Fallback to basic load handling
+                img.classList.remove('opacity-50');
+                img.style.opacity = '1';
+                hideLoadingState(index);
+                hideFailedState(index);
+            }
+        }
+
+        // Global variables for modal navigation
+        let currentScreenshotIndex = 0;
+        let currentScreenshots = [];
+        
         // Open screenshot modal
         function openScreenshotModal(screenshot) {
             try {
@@ -886,19 +1171,156 @@
                     return;
                 }
                 
-                modalImage.src = screenshot.url;
-                modalImage.alt = screenshot.title || 'Screenshot';
+                // Get all screenshots for navigation
+                const screenshotCards = document.querySelectorAll('#screenshots-gallery img[data-screenshot-index]');
+                console.log('🔍 Found screenshot cards:', screenshotCards.length);
                 
+                currentScreenshots = Array.from(screenshotCards).map((img, index) => ({
+                    url: img.dataset.originalSrc, // Always use the original source URL
+                    title: img.alt,
+                    description: img.dataset.description || '',
+                    index: parseInt(img.dataset.screenshotIndex)
+                }));
+                
+                console.log('📋 Built screenshots array:', currentScreenshots);
+                console.log('🎯 Current screenshot URL:', screenshot.url);
+                
+                // Find current screenshot index
+                currentScreenshotIndex = currentScreenshots.findIndex(s => s.url === screenshot.url);
+                if (currentScreenshotIndex === -1) {
+                    console.log('⚠️ Screenshot not found in array, using index 0');
+                    currentScreenshotIndex = 0;
+                } else {
+                    console.log('✅ Found screenshot at index:', currentScreenshotIndex);
+                }
+                
+                console.log('🖼️ Updating modal with screenshot:', currentScreenshots[currentScreenshotIndex]);
+                
+                // Update modal content
+                updateModalContent(currentScreenshots[currentScreenshotIndex], currentScreenshotIndex + 1, currentScreenshots.length);
+                
+                // Also set the modal image directly as a fallback
+                if (modalImage) {
+                    console.log('🔄 Setting modal image directly as fallback:', screenshot.url);
+                    modalImage.src = screenshot.url;
+                    modalImage.alt = screenshot.title || 'Screenshot';
+                    
+                    // Check if this is a failed image and show appropriate state
+                    if (screenshot.url.includes('images/appstore.png')) {
+                        console.log('⚠️ Screenshot failed, showing failed state in modal');
+                        setTimeout(() => {
+                            hideModalLoading();
+                            showFailedImageInModal();
+                        }, 500);
+                    }
+                }
+                
+                // Show modal
                 modal.classList.remove('hidden');
+                
+                // Setup modal navigation
+                setupModalNavigation();
+                
             } catch (error) {
                 console.error('Error opening screenshot modal:', error);
             }
         }
 
+        // Update modal content
+        function updateModalContent(screenshot, currentNumber, totalNumber) {
+            console.log('🔄 Updating modal content:', screenshot);
+            
+            const modalImage = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalCounter = document.getElementById('modal-counter');
+            const modalLoading = document.getElementById('modal-loading');
+            const modalFailed = document.getElementById('modal-failed');
+            
+            if (modalImage) {
+                console.log('📸 Setting modal image source:', screenshot.url);
+                // Reset states
+                if (modalLoading) modalLoading.style.display = 'flex';
+                if (modalFailed) modalFailed.style.display = 'none';
+                modalImage.style.opacity = '0';
+                
+                modalImage.src = screenshot.url;
+                modalImage.alt = screenshot.title || 'Screenshot';
+            }
+            
+            if (modalTitle) modalTitle.textContent = screenshot.title || 'Screenshot';
+            if (modalDescription) modalDescription.textContent = screenshot.description || '';
+            if (modalCounter) modalCounter.textContent = `${currentNumber} of ${totalNumber}`;
+            
+            console.log('✅ Modal content updated successfully');
+        }
+        
+        // Navigate to next screenshot
+        function nextScreenshot() {
+            if (currentScreenshots.length === 0) return;
+            
+            currentScreenshotIndex = (currentScreenshotIndex + 1) % currentScreenshots.length;
+            const screenshot = currentScreenshots[currentScreenshotIndex];
+            updateModalContent(screenshot, currentScreenshotIndex + 1, currentScreenshots.length);
+            updateModalNavigationButtons();
+        }
+        
+        // Navigate to previous screenshot
+        function prevScreenshot() {
+            if (currentScreenshots.length === 0) return;
+            
+            currentScreenshotIndex = (currentScreenshotIndex - 1 + currentScreenshots.length) % currentScreenshots.length;
+            const screenshot = currentScreenshots[currentScreenshotIndex];
+            updateModalContent(screenshot, currentScreenshotIndex + 1, currentScreenshots.length);
+            updateModalNavigationButtons();
+        }
+        
+        // Update modal navigation button states
+        function updateModalNavigationButtons() {
+            const prevBtn = document.getElementById('modal-prev');
+            const nextBtn = document.getElementById('modal-next');
+            
+            if (prevBtn && nextBtn) {
+                // Show/hide buttons based on position
+                prevBtn.style.opacity = currentScreenshotIndex === 0 ? '0.3' : '1';
+                prevBtn.style.pointerEvents = currentScreenshotIndex === 0 ? 'none' : 'auto';
+                
+                nextBtn.style.opacity = currentScreenshotIndex === currentScreenshots.length - 1 ? '0.3' : '1';
+                nextBtn.style.pointerEvents = currentScreenshotIndex === currentScreenshots.length - 1 ? '0.3' : 'auto';
+            }
+        }
+        
+        // Setup modal navigation event listeners
+        function setupModalNavigation() {
+            const prevBtn = document.getElementById('modal-prev');
+            const nextBtn = document.getElementById('modal-next');
+            
+            if (prevBtn && nextBtn) {
+                // Remove existing listeners
+                prevBtn.replaceWith(prevBtn.cloneNode(true));
+                nextBtn.replaceWith(nextBtn.cloneNode(true));
+                
+                // Get new references
+                const newPrevBtn = document.getElementById('modal-prev');
+                const newNextBtn = document.getElementById('modal-next');
+                
+                // Add new listeners
+                newPrevBtn.addEventListener('click', prevScreenshot);
+                newNextBtn.addEventListener('click', nextScreenshot);
+                
+                // Update button states
+                updateModalNavigationButtons();
+            }
+        }
+        
         // Close screenshot modal
         function closeScreenshotModal() {
             const modal = document.getElementById('screenshot-modal');
             modal.classList.add('hidden');
+            
+            // Reset navigation state
+            currentScreenshotIndex = 0;
+            currentScreenshots = [];
         }
 
         // Setup screenshot navigation
@@ -920,12 +1342,12 @@
             // Navigation button click handlers
             prevBtn.addEventListener('click', () => {
                 console.log('Previous button clicked');
-                gallery.scrollBy({ left: -240, behavior: 'smooth' }); // 224px card + 16px gap
+                gallery.scrollBy({ left: -272, behavior: 'smooth' }); // 256px card + 16px gap
             });
             
             nextBtn.addEventListener('click', () => {
                 console.log('Next button clicked');
-                gallery.scrollBy({ left: 240, behavior: 'smooth' }); // 224px card + 16px gap
+                gallery.scrollBy({ left: 272, behavior: 'smooth' }); // 256px card + 16px gap
             });
             
             // Show/hide navigation buttons based on scroll position
@@ -975,10 +1397,22 @@
             }
         });
         
-        // Close modal with Escape key
+        // Modal keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !screenshotModal.classList.contains('hidden')) {
-                closeScreenshotModal();
+            if (screenshotModal.classList.contains('hidden')) return;
+            
+            switch (e.key) {
+                case 'Escape':
+                    closeScreenshotModal();
+                    break;
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    prevScreenshot();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    nextScreenshot();
+                    break;
             }
         });
 
@@ -1051,7 +1485,7 @@
             if (gallery) {
                 console.log('Testing scroll functionality');
                 console.log('Current scroll position:', gallery.scrollLeft);
-                gallery.scrollBy({ left: 240, behavior: 'smooth' });
+                gallery.scrollBy({ left: 272, behavior: 'smooth' });
                 console.log('Scroll test completed');
             } else {
                 console.error('Gallery not found');
@@ -1082,6 +1516,261 @@
             }
             
             return starsHTML;
+        }
+
+        // Note: Image URL testing functions removed to prevent rate limiting issues
+        // Images are now tested naturally through the img element's onload/onerror events
+
+        // Manual function to retry loading failed images with intelligent rate limiting
+        async function retryFailedImages() {
+            const failedImages = document.querySelectorAll('#screenshots-gallery img[src="images/appstore.png"]');
+            console.log(`🔄 Retrying ${failedImages.length} failed images with intelligent rate limiting...`);
+            
+            if (failedImages.length === 0) {
+                console.log('✅ No failed images to retry');
+                return;
+            }
+            
+            // Show retry progress
+            const retryButton = document.querySelector('button[onclick="retryFailedImages()"]');
+            if (retryButton) {
+                retryButton.textContent = 'Retrying...';
+                retryButton.disabled = true;
+            }
+            
+            for (let i = 0; i < failedImages.length; i++) {
+                const img = failedImages[i];
+                const originalSrc = img.dataset.originalSrc;
+                
+                if (originalSrc) {
+                    console.log(`🔄 Retrying image ${i + 1}/${failedImages.length}: ${originalSrc}`);
+                    
+                    // Show loading state for this specific image
+                    const index = img.dataset.screenshotIndex;
+                    if (index !== undefined) {
+                        showLoadingState(index);
+                    }
+                    
+                    // Use longer delays to avoid rate limiting (5s, 10s, 15s...)
+                    const delay = 5000 + (i * 5000); // 5s, 10s, 15s, 20s...
+                    console.log(`⏰ Waiting ${delay/1000}s before retry ${i + 1} to avoid rate limiting`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    
+                    // Try to reload the image
+                    img.src = originalSrc;
+                    
+                    // Additional delay between retries
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+            
+            // Reset button and update progress
+            if (retryButton) {
+                retryButton.textContent = 'Retry Failed Images';
+                retryButton.disabled = false;
+            }
+            
+            // Update progress after retry
+            setTimeout(() => {
+                updateProgress();
+            }, 3000);
+        }
+
+        // Function to manually reload all screenshots
+        async function reloadAllScreenshots() {
+            console.log('🔄 Reloading all screenshots...');
+            const project = await getCurrentProject();
+            if (project) {
+                await loadScreenshots(project);
+            }
+        }
+
+        // Helper function to get current project data
+        async function getCurrentProject() {
+            try {
+                const projects = await FirebaseDB.getProjects();
+                const urlParams = new URLSearchParams(window.location.search);
+                const projectIndex = parseInt(urlParams.get('project')) || 0;
+                return projects[projectIndex];
+            } catch (error) {
+                console.error('Error getting current project:', error);
+                return null;
+            }
+        }
+
+        // Hide loading state for a specific screenshot
+        function hideLoadingState(index) {
+            const loadingElement = document.getElementById(`loading-${index}`);
+            if (loadingElement) {
+                loadingElement.style.opacity = '0';
+                setTimeout(() => {
+                    loadingElement.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Show loading state for a specific screenshot (for retry)
+        function showLoadingState(index) {
+            const loadingElement = document.getElementById(`loading-${index}`);
+            const failedElement = document.getElementById(`failed-${index}`);
+            if (loadingElement) {
+                loadingElement.style.display = 'flex';
+                loadingElement.style.opacity = '1';
+            }
+            // Hide failed state when retrying
+            if (failedElement) {
+                failedElement.style.display = 'none';
+            }
+        }
+
+        // Show failed state for a specific screenshot
+        function showFailedState(index) {
+            const failedElement = document.getElementById(`failed-${index}`);
+            if (failedElement) {
+                failedElement.style.display = 'flex';
+            }
+        }
+
+        // Hide failed state for a specific screenshot
+        function hideFailedState(index) {
+            const failedElement = document.getElementById(`failed-${index}`);
+            if (failedElement) {
+                failedElement.style.display = 'none';
+            }
+        }
+
+        // Hide modal loading state
+        function hideModalLoading() {
+            const modalLoading = document.getElementById('modal-loading');
+            if (modalLoading) {
+                modalLoading.style.display = 'none';
+            }
+        }
+
+        // Show failed image state in modal
+        function showFailedImageInModal() {
+            const modalFailed = document.getElementById('modal-failed');
+            if (modalFailed) {
+                modalFailed.style.display = 'flex';
+            }
+        }
+
+        // Hide failed image state in modal
+        function hideFailedImageInModal() {
+            const modalFailed = document.getElementById('modal-failed');
+            if (modalFailed) {
+                modalFailed.style.display = 'none';
+            }
+        }
+
+        // Retry the current modal image
+        function retryCurrentModalImage() {
+            if (currentScreenshots.length === 0 || currentScreenshotIndex < 0) return;
+            
+            const currentScreenshot = currentScreenshots[currentScreenshotIndex];
+            console.log('🔄 Retrying current modal image:', currentScreenshot);
+            
+            // Reset modal states
+            hideFailedImageInModal();
+            
+            // Update modal content (this will trigger loading state)
+            updateModalContent(currentScreenshot, currentScreenshotIndex + 1, currentScreenshots.length);
+            
+            // Also retry the corresponding gallery image
+            const galleryIndex = currentScreenshot.index;
+            if (galleryIndex !== undefined) {
+                retrySingleImage(galleryIndex);
+            }
+        }
+
+        // Retry a single image
+        async function retrySingleImage(index) {
+            console.log(`🔄 Retrying single image at index ${index}`);
+            
+            const img = document.querySelector(`img[data-screenshot-index="${index}"]`);
+            if (!img) {
+                console.error('Image element not found for retry');
+                return;
+            }
+            
+            const originalSrc = img.dataset.originalSrc;
+            if (!originalSrc) {
+                console.error('No original source found for retry');
+                return;
+            }
+            
+            // Show loading state
+            showLoadingState(index);
+            
+            // Reset image source to trigger loading
+            img.src = originalSrc;
+            
+            // Add a small delay to ensure the loading state is visible
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            console.log(`🔄 Retrying image: ${originalSrc}`);
+            
+            // Set a timeout to handle cases where the image doesn't load or fails again
+            setTimeout(() => {
+                // Check if the image is still loading (hasn't triggered onload or onerror)
+                if (img.src === originalSrc && !img.complete) {
+                    console.log(`⏰ Image retry timeout for index ${index}`);
+                    // Force show failed state if image is still loading after timeout
+                    hideLoadingState(index);
+                    showFailedState(index);
+                }
+            }, 10000); // 10 second timeout
+        }
+
+        // Show loading progress for individual images
+        function updateImageLoadingProgress(loadedCount, totalCount) {
+            const progressText = document.querySelector('.image-loading-progress');
+            if (progressText) {
+                if (loadedCount === totalCount) {
+                    progressText.textContent = `All ${totalCount} images loaded successfully!`;
+                    progressText.className = 'text-sm text-green-600 font-medium';
+                } else {
+                    progressText.textContent = `Images loaded: ${loadedCount}/${totalCount}`;
+                    progressText.className = 'text-sm text-gray-500';
+                }
+            }
+        }
+
+        // Function to suggest alternative solutions for rate-limited images
+        function showImageAlternatives() {
+            const helpMessage = document.createElement('div');
+            helpMessage.className = 'mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg';
+            helpMessage.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-blue-800">Image Loading Tips</h3>
+                        <p class="text-sm text-blue-700 mt-1">
+                            If screenshots continue to fail, try these solutions:
+                        </p>
+                        <ul class="text-sm text-blue-600 mt-2 list-disc list-inside space-y-1">
+                            <li>Wait a few minutes and refresh the page</li>
+                            <li>Use the "Retry Failed Images" button above</li>
+                            <li>Check your internet connection</li>
+                            <li>Try accessing the page later when Google's servers are less busy</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // Remove any existing help message
+            const existingHelp = document.querySelector('.bg-blue-50');
+            if (existingHelp) {
+                existingHelp.remove();
+            }
+            
+            // Add the new help message
+            const gallery = document.getElementById('screenshots-gallery');
+            if (gallery && gallery.parentNode) {
+                gallery.parentNode.insertBefore(helpMessage, gallery.nextSibling);
+            }
         }
     </script>
 </body>
