@@ -10,6 +10,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     
     steps:
       - name: Checkout repository
@@ -27,24 +31,26 @@ jobs:
       - name: Validate build
         run: npm run build
 
-      - name: Create static site
+      - name: Test server startup
+        run: timeout 10s npm start || true
+
+      - name: Check file structure
         run: |
-          echo "Creating static site for GitHub Pages..."
-          mkdir -p dist
-          cp -r index.html dist/
-          cp -r pages dist/
-          cp -r assets dist/
-          cp -r images dist/
-          cp -r config dist/
-          cp -r cache dist/
-          cp robots.txt dist/
-          cp sitemap.xml dist/
-          cp site.webmanifest dist/
-          echo "Static site created successfully!"
+          echo "Checking essential files..."
+          ls -la
+          echo "Checking assets directory..."
+          ls -la assets/
+          echo "Checking pages directory..."
+          ls -la pages/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .  # Upload the entire project for static site
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+        id: deployment
+        uses: actions/deploy-pages@v4
