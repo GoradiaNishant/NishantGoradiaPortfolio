@@ -38,3 +38,15 @@ jobs:
           ls -la assets/
           echo "Checking pages directory..."
           ls -la pages/
+          
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .  # Upload the entire project for static site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
