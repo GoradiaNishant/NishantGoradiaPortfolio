@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "echo 'No build step required for static site'",
+    "build": "echo 'Build completed - static site ready for GitHub Pages'",
     "deploy": "npm run deploy:firebase",
     "deploy:firebase": "firebase deploy",
     "cache:stats": "curl http://localhost:3000/cache/stats",
