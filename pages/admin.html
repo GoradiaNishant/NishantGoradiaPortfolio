@@ -228,6 +228,7 @@
                             <p class="text-sm text-blue-700 mt-1">
                                 This system automatically caches Google Play Store images to prevent 429 rate limiting errors. 
                                 Images are cached locally and retried with exponential backoff when they fail.
+                                <strong>Note: Server cache management is only available in development mode.</strong>
                             </p>
                         </div>
                     </div>
@@ -250,7 +251,7 @@
                                 Clear Browser Cache
                             </button>
                             <button onclick="clearServerCache()" class="w-full bg-orange-600 text-white px-4 py-2 rounded text-sm hover:bg-orange-700 transition duration-300">
-                                Clear Server Cache
+                                Clear Server Cache (Dev Only)
                             </button>
                             <button onclick="refreshCacheStats()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700 transition duration-300">
                                 Refresh Stats

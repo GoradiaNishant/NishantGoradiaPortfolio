@@ -467,19 +467,32 @@ function refreshCacheStats() {
 
 async function clearServerCache() {
     try {
-        const response = await fetch('http://localhost:3000/cache/clear', {
-            method: 'DELETE'
-        });
+        // Check if we're on localhost (development) or production
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
-        if (response.ok) {
-            const result = await response.json();
-            alert(`Server cache cleared: ${result.message}`);
-            refreshCacheStats();
+        if (isLocalhost) {
+            // Try to connect to local server
+            const response = await fetch('http://localhost:3000/cache/clear', {
+                method: 'DELETE'
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                alert(`Server cache cleared: ${result.message}`);
+                refreshCacheStats();
+            } else {
+                alert('Failed to clear server cache. Make sure the proxy server is running.');
+            }
         } else {
-            alert('Failed to clear server cache. Make sure the proxy server is running.');
+            // On production (GitHub Pages), server cache is not available
+            alert('Server cache management is only available in development mode. On GitHub Pages, only browser cache can be cleared.');
         }
     } catch (error) {
-        alert('Error clearing server cache. Make sure the proxy server is running on port 3000.');
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            alert('Error clearing server cache. Make sure the proxy server is running on port 3000.');
+        } else {
+            alert('Server cache management is not available on GitHub Pages. Use browser cache clearing instead.');
+        }
     }
 }
 
