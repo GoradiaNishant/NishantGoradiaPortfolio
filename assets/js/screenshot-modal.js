@@ -2,6 +2,220 @@
 // SCREENSHOT MODAL FUNCTIONALITY
 // ===================================
 
+// Global variables for screen resolution
+let currentScreenResolution = {
+    width: 0,
+    height: 0,
+    ratio: 0
+};
+
+// Get current screen resolution
+function getScreenResolution() {
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const ratio = screenWidth / screenHeight;
+    
+    currentScreenResolution = {
+        width: screenWidth,
+        height: screenHeight,
+        ratio: ratio
+    };
+    
+    return currentScreenResolution;
+}
+
+// Get current window resolution
+function getWindowResolution() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const ratio = windowWidth / windowHeight;
+    
+    const windowResolution = {
+        width: windowWidth,
+        height: windowHeight,
+        ratio: ratio
+    };
+    
+    return windowResolution;
+}
+
+// Calculate optimal modal size based on screen resolution
+function calculateOptimalModalSize() {
+    const screenRes = getScreenResolution();
+    const windowRes = getWindowResolution();
+    
+    // Calculate available space (accounting for padding and UI elements)
+    const availableWidth = windowRes.width - 80; // 40px padding on each side
+    const availableHeight = windowRes.height - 80; // 40px padding on each side
+    
+    // Use more conservative sizing to prevent over-enlargement
+    const useFullScreen = false; // Disable automatic full screen for now
+    
+    // Calculate optimal size based on available space
+    const maxModalWidth = Math.min(availableWidth, 1000); // Cap at 1000px
+    const maxModalHeight = Math.min(availableHeight, 700); // Cap at 700px
+    
+    const optimalSize = {
+        width: maxModalWidth,
+        height: maxModalHeight,
+        useFullScreen: useFullScreen
+    };
+    
+    return optimalSize;
+}
+
+// Apply optimal sizing to modal based on screen resolution
+function applyModalSizing(modal, optimalSize) {
+    if (!modal) return;
+    
+    const modalContent = modal.querySelector('.modal-content');
+    const modalImage = modal.querySelector('.modal-image');
+    
+    if (optimalSize.useFullScreen) {
+        
+        // Set modal to full screen
+        modal.style.padding = '0';
+        modal.classList.add('fullscreen-mode');
+        
+        if (modalContent) {
+            modalContent.style.maxWidth = '100vw';
+            modalContent.style.maxHeight = '100vh';
+            modalContent.style.width = '100vw';
+            modalContent.style.height = '100vh';
+            modalContent.style.borderRadius = '0';
+            modalContent.style.padding = '0';
+        }
+        
+        if (modalImage) {
+            // Full screen mode - use viewport units
+            modalImage.style.maxWidth = '98vw';
+            modalImage.style.maxHeight = '95vh';
+            modalImage.style.width = 'auto';
+            modalImage.style.height = 'auto';
+            modalImage.style.objectFit = 'contain';
+        }
+    } else {
+        // Constrained mode - use more conservative sizing
+        modal.style.padding = '2rem';
+        modal.classList.remove('fullscreen-mode');
+        
+        if (modalContent) {
+            modalContent.style.maxWidth = `${optimalSize.width}px`;
+            modalContent.style.maxHeight = `${optimalSize.height}px`;
+            modalContent.style.width = 'auto';
+            modalContent.style.height = 'auto';
+            modalContent.style.borderRadius = '1rem';
+            modalContent.style.padding = '2rem';
+        }
+        
+        if (modalImage) {
+            // Full screen sizing - let CSS handle it
+            modalImage.style.maxWidth = '95vw';
+            modalImage.style.maxHeight = '90vh';
+            modalImage.style.width = 'auto';
+            modalImage.style.height = 'auto';
+            modalImage.style.objectFit = 'contain';
+        }
+    }
+    
+}
+
+// Setup window resize handler for responsive modal
+function setupModalResizeHandler(modal) {
+    // Remove any existing resize handler
+    window.removeEventListener('resize', handleModalResize);
+    
+    // Add new resize handler
+    window.addEventListener('resize', handleModalResize);
+    
+    function handleModalResize() {
+        const optimalSize = calculateOptimalModalSize();
+        applyModalSizing(modal, optimalSize);
+    }
+    
+}
+
+// Display current resolution information
+function displayResolutionInfo() {
+    const screenRes = getScreenResolution();
+    const windowRes = getWindowResolution();
+    
+    // Create or update resolution info element
+    let resolutionInfo = document.getElementById('resolution-info');
+    if (!resolutionInfo) {
+        resolutionInfo = document.createElement('div');
+        resolutionInfo.id = 'resolution-info';
+        resolutionInfo.className = 'resolution-info';
+        document.body.appendChild(resolutionInfo);
+    }
+    
+    resolutionInfo.innerHTML = `
+        <div class="resolution-details">
+            <h4>📱 Screen Resolution</h4>
+            <p>Width: ${screenRes.width}px | Height: ${screenRes.height}px | Ratio: ${screenRes.ratio.toFixed(2)}</p>
+            <h4>🪟 Window Resolution</h4>
+            <p>Width: ${windowRes.width}px | Height: ${windowRes.height}px | Ratio: ${windowRes.ratio.toFixed(2)}</p>
+            <button id="toggle-fullscreen" class="fullscreen-toggle">
+                ${windowRes.width >= 1200 && windowRes.height >= 800 ? '📱 Switch to Constrained' : '🖥️ Switch to Full Screen'}
+            </button>
+        </div>
+    `;
+    
+    // Add toggle functionality
+    const toggleBtn = document.getElementById('toggle-fullscreen');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleFullScreenMode);
+    }
+    
+    console.log('📊 Resolution info displayed');
+}
+
+// Full screen image sizing
+function ensureImageFitsScreen(imageElement) {
+    if (!imageElement) return;
+    
+    // Use viewport units for responsive sizing
+    imageElement.style.maxWidth = '95vw';
+    imageElement.style.maxHeight = '90vh';
+    imageElement.style.width = 'auto';
+    imageElement.style.height = 'auto';
+    imageElement.style.objectFit = 'contain';
+    imageElement.style.opacity = '1';
+}
+
+// Toggle between full screen and constrained mode
+function toggleFullScreenMode() {
+    const modal = document.getElementById('screenshot-modal');
+    if (!modal) return;
+    
+    const isFullScreen = modal.classList.contains('fullscreen-mode');
+    const optimalSize = calculateOptimalModalSize();
+    
+    if (isFullScreen) {
+        // Switch to constrained mode
+        optimalSize.useFullScreen = false;
+        optimalSize.width = Math.min(window.innerWidth - 80, 1000);
+        optimalSize.height = Math.min(window.innerHeight - 80, 700);
+    } else {
+        // Switch to full screen mode
+        optimalSize.useFullScreen = true;
+        optimalSize.width = window.innerWidth;
+        optimalSize.height = window.innerHeight;
+    }
+    
+    applyModalSizing(modal, optimalSize);
+    // Resolution info display removed as requested
+}
+
+// Clean up resolution info when modal is closed
+function cleanupResolutionInfo() {
+    const resolutionInfo = document.getElementById('resolution-info');
+    if (resolutionInfo) {
+        resolutionInfo.remove();
+    }
+    console.log('🧹 Resolution info cleaned up');
+}
+
 // Open screenshot modal
 function openScreenshotModal(screenshot) {
     try {
@@ -20,6 +234,12 @@ function openScreenshotModal(screenshot) {
             return;
         }
 
+        // Get screen resolution and calculate optimal modal size
+        const optimalSize = calculateOptimalModalSize();
+        
+        // Apply optimal sizing to modal
+        applyModalSizing(modal, optimalSize);
+
         // Get all screenshots for navigation
         const screenshotCards = document.querySelectorAll('#screenshots-gallery img[data-screenshot-index]');
         console.log('🔍 Found screenshot cards:', screenshotCards.length);
@@ -31,32 +251,22 @@ function openScreenshotModal(screenshot) {
             index: parseInt(img.dataset.screenshotIndex)
         }));
 
-        console.log('📋 Built screenshots array:', currentScreenshots);
-        console.log('🎯 Current screenshot URL:', screenshot.url);
-
         // Find current screenshot index
         currentScreenshotIndex = currentScreenshots.findIndex(s => s.url === screenshot.url);
         if (currentScreenshotIndex === -1) {
-            console.log('⚠️ Screenshot not found in array, using index 0');
             currentScreenshotIndex = 0;
-        } else {
-            console.log('✅ Found screenshot at index:', currentScreenshotIndex);
-        }
-
-        console.log('🖼️ Updating modal with screenshot:', currentScreenshots[currentScreenshotIndex]);
+        } 
 
         // Update modal content
         updateModalContent(currentScreenshots[currentScreenshotIndex], currentScreenshotIndex + 1, currentScreenshots.length);
 
         // Also set the modal image directly as a fallback
         if (modalImage) {
-            console.log('🔄 Setting modal image directly as fallback:', screenshot.url);
             modalImage.src = screenshot.url;
             modalImage.alt = screenshot.title || 'Screenshot';
 
             // Check if this is a failed image and show appropriate state
             if (screenshot.url.includes('assets/images/appstore.png')) {
-                console.log('⚠️ Screenshot failed, showing failed state in modal');
                 setTimeout(() => {
                     hideModalLoading();
                     showFailedImageInModal();
@@ -69,6 +279,11 @@ function openScreenshotModal(screenshot) {
 
         // Setup modal navigation
         setupModalNavigation();
+        
+        // Setup window resize handler for responsive modal
+        setupModalResizeHandler(modal);
+        
+        // Resolution info display removed as requested
 
     } catch (error) {
         console.error('Error opening screenshot modal:', error);
@@ -77,7 +292,6 @@ function openScreenshotModal(screenshot) {
 
 // Update modal content
 function updateModalContent(screenshot, currentNumber, totalNumber) {
-    console.log('🔄 Updating modal content:', screenshot);
 
     const modalImage = document.getElementById('modal-image');
     const modalTitle = document.getElementById('modal-title');
@@ -95,13 +309,18 @@ function updateModalContent(screenshot, currentNumber, totalNumber) {
 
         modalImage.src = screenshot.url;
         modalImage.alt = screenshot.title || 'Screenshot';
+        
+        // Simple load event
+        modalImage.onload = function() {
+            this.style.opacity = '1';
+            hideModalLoading();
+        };
     }
 
     if (modalTitle) modalTitle.textContent = screenshot.title || 'Screenshot';
     if (modalDescription) modalDescription.textContent = screenshot.description || '';
     if (modalCounter) modalCounter.textContent = `${currentNumber} of ${totalNumber}`;
 
-    console.log('✅ Modal content updated successfully');
 }
 
 // Navigate to next screenshot
@@ -170,6 +389,11 @@ function closeScreenshotModal() {
     // Reset navigation state
     currentScreenshotIndex = 0;
     currentScreenshots = [];
+    
+    // Resolution info cleanup removed as requested
+    
+    // Remove resize handler
+    window.removeEventListener('resize', handleModalResize);
 }
 
 // Hide modal loading state
