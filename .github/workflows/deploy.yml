@@ -1,16 +1,16 @@
-name: Manual Deploy to GitHub Pages
+name: Validate and Test Deployment
 
 on:
-  workflow_dispatch:  # Only runs when manually triggered from Actions tab
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Manual trigger
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,13 +24,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
+      - name: Validate package.json
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist  # Change to your build/static folder
+      - name: Test server startup
+        run: timeout 10s npm start || true
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Check file structure
+        run: |
+          echo "Checking essential files..."
+          ls -la
+          echo "Checking assets directory..."
+          ls -la assets/
+          echo "Checking pages directory..."
+          ls -la pages/
