@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Project Details | Nishant Goradia Portfolio</title>
+    <meta name="title" content="Project Details | Nishant Goradia Portfolio">
+    <meta name="description"
+        content="Detailed view of mobile app development projects by Nishant Goradia. Explore technical implementation, features, challenges, and results of innovative mobile applications built with Flutter and React Native.">
+    <meta name="keywords"
+        content="Nishant Goradia, mobile app project, flutter project, react native project, app development, mobile development, project details, portfolio project">
+    <meta name="author" content="Nishant Goradia">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://goradianishant.github.io/NishantGoradiaPortfolio/project-detail.html">
+    <meta property="og:title" content="Project Details | Nishant Goradia Portfolio">
+    <meta property="og:description"
+        content="Detailed view of mobile app development projects by Nishant Goradia. Explore technical implementation, features, challenges, and results of innovative mobile applications.">
+    <meta property="og:image"
+        content="https://goradianishant.github.io/NishantGoradiaPortfolio/images/project-detail-og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Nishant Goradia Portfolio">
+    <meta property="og:locale" content="en_US">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://goradianishant.github.io/NishantGoradiaPortfolio/project-detail.html">
+    <meta property="twitter:title" content="Project Details | Nishant Goradia Portfolio">
+    <meta property="twitter:description"
+        content="Detailed view of mobile app development projects by Nishant Goradia. Explore technical implementation, features, challenges, and results of innovative mobile applications.">
+    <meta property="twitter:image"
+        content="https://goradianishant.github.io/NishantGoradiaPortfolio/images/project-detail-og-image.jpg">
+
+    <!-- Additional SEO Meta Tags -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Project Details">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://goradianishant.github.io/NishantGoradiaPortfolio/project-detail.html">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//www.gstatic.com">
+
+    <!-- Structured Data for Project -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": "Mobile App Project",
+        "description": "Detailed view of mobile app development project with technical implementation, features, and results",
+        "url": "https://goradianishant.github.io/NishantGoradiaPortfolio/project-detail.html",
+        "author": {
+            "@type": "Person",
+            "name": "Nishant Goradia"
+        },
+        "creator": {
+            "@type": "Person",
+            "name": "Nishant Goradia"
+        },
+        "datePublished": "2024-01-01",
+        "dateModified": "2024-01-01",
+        "genre": "Mobile App Development",
+        "keywords": "mobile app, flutter, react native, app development",
+        "image": "https://goradianishant.github.io/NishantGoradiaPortfolio/images/project-screenshot.jpg",
+        "mainEntity": {
+            "@type": "SoftwareApplication",
+            "name": "Mobile Application",
+            "applicationCategory": "Mobile App",
+            "operatingSystem": "Android, iOS",
+            "softwareVersion": "1.0"
+        }
+    }
+    </script>
+
+    <!-- Breadcrumb Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://goradianishant.github.io/NishantGoradiaPortfolio/"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Projects",
+                "item": "https://goradianishant.github.io/NishantGoradiaPortfolio/#projects"
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Project Details",
+                "item": "https://goradianishant.github.io/NishantGoradiaPortfolio/project-detail.html"
+            }
+        ]
+    }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>
+        // Wait for Firebase to load
+        window.addEventListener('load', function () {
+            if (typeof firebase === 'undefined') {
+                console.error('❌ Firebase SDK failed to load');
+            }
+        });
+    </script>
+    <script src="../config/firebase-config.js?v=1"></script>
+    <script src="../assets/js/image-cache.js"></script>
+    <script src="../assets/js/project-detail.js"></script>
+    <script src="../assets/js/screenshot-gallery.js"></script>
+    <script src="../assets/js/screenshot-modal.js"></script>
+    <script src="../assets/js/project-detail-init.js"></script>
+    <link rel="stylesheet" href="../assets/css/project-detail.css">
+    <link rel="stylesheet" href="../assets/css/common-nav.css">
+    <script src="../assets/js/common-nav.js"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-800 smooth-scroll">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading project details...</div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header id="nav-container">
+        <!-- Navigation will be dynamically inserted here -->
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-20 pb-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <img src="https://picsum.photos/600/400" alt="Task Manager App" class="rounded-lg shadow-lg">
+                </div>
+                <div class="md:w-1/2 md:pl-10">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Task Manager App</h1>
+                    <p class="text-xl mb-6">A comprehensive productivity app built with Flutter, featuring task
+                        scheduling, reminders, and cloud synchronization.</p>
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Flutter</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Dart</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Firebase</span>
+                        <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Cloud Sync</span>
+                    </div>
+                    <div class="flex space-x-4" id="store-buttons">
+                        <!-- Store buttons will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Project Overview -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6">Project Overview</h2>
+                    <div id="project-overview-container">
+                        <!-- Project overview will be loaded dynamically -->
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Key Features</h3>
+                    <div id="key-features-container">
+                        <!-- Key features will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12">App Screenshots</h2>
+
+
+            <!-- Screenshot Gallery Container -->
+            <div class="relative">
+                <!-- Screenshot Gallery -->
+                <div id="screenshots-gallery" class="screenshot-gallery">
+                    <!-- Screenshots will be loaded dynamically -->
+                </div>
+
+                <!-- Navigation Buttons -->
+                <button id="screenshot-prev"
+                    class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 p-2 rounded-full shadow-lg transition-all duration-300 opacity-1 pointer-events-auto z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                </button>
+                <button id="screenshot-next"
+                    class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-90 hover:bg-opacity-100 text-gray-800 p-2 rounded-full shadow-lg transition-all duration-300 opacity-1 pointer-events-auto z-10">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Add Screenshot Button (Admin Only) -->
+            <div id="add-screenshot-section" class="text-center mt-8 hidden">
+                <button id="add-screenshot-btn"
+                    class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">
+                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add Screenshot
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshot Modal -->
+    <div id="screenshot-modal"
+        class="fixed inset-0 bg-black bg-opacity-75 hidden z-50 flex items-center justify-center p-2 sm:p-4">
+        <div class="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
+            <!-- Close Button -->
+            <button id="close-modal"
+                class="absolute top-2 right-2 sm:top-4 sm:right-4 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-1 sm:p-2">
+                <svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Navigation Controls -->
+            <button id="modal-prev"
+                class="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-2 sm:p-3 transition-all duration-300 hover:bg-opacity-75">
+                <svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+
+            <button id="modal-next"
+                class="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-20 bg-black bg-opacity-50 rounded-full p-2 sm:p-3 transition-all duration-300 hover:bg-opacity-75">
+                <svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+
+            <!-- Mobile Phone Frame Container -->
+            <div class="relative mx-auto w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+                <!-- Phone Frame -->
+                <div class="relative bg-gray-900 rounded-[2rem] sm:rounded-[3rem] p-2 sm:p-3 shadow-2xl">
+                    <!-- Phone Screen -->
+                    <div
+                        class="bg-gray-800 rounded-[1.5rem] sm:rounded-[2.5rem] overflow-hidden relative w-full aspect-[9/16]">
+
+                        <!-- Screenshot Image -->
+                        <img id="modal-image" src="" alt=""
+                            class="w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                            onload="console.log('✅ Modal image loaded successfully:', this.src); this.style.opacity='1'; hideModalLoading();"
+                            onerror="console.log('❌ Modal image failed to load:', this.src); this.style.opacity='1'; hideModalLoading(); showFailedImageInModal();">
+
+                        <!-- Loading State for Modal -->
+                        <div id="modal-loading"
+                            class="absolute inset-0 flex items-center justify-center bg-gray-700 z-10">
+                            <div class="text-center">
+                                <div
+                                    class="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-indigo-400 mx-auto mb-2 sm:mb-4">
+                                </div>
+                                <p class="text-white text-sm sm:text-lg">Loading screenshot...</p>
+                            </div>
+                        </div>
+
+                        <!-- Failed Image State (shows placeholder in phone frame) -->
+                        <div id="modal-failed"
+                            class="absolute inset-0 bg-gray-600 flex items-center justify-center z-5 hidden">
+                            <div class="text-center">
+                                <svg class="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-2 sm:mb-4" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                <p class="text-gray-300 text-sm sm:text-lg font-medium">Screenshot Unavailable</p>
+                                <p class="text-gray-400 text-xs sm:text-sm mt-1 sm:mt-2">This screenshot failed to load
+                                </p>
+                                <button onclick="retryCurrentModalImage()"
+                                    class="mt-2 sm:mt-4 bg-indigo-600 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-indigo-700 transition-colors text-xs sm:text-sm">
+                                    Retry This Screenshot
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Status Bar Overlay -->
+                        <div
+                            class="absolute top-0 left-0 right-0 h-6 sm:h-8 bg-black bg-opacity-80 flex items-center justify-between px-3 sm:px-6 z-15">
+                            <div class="flex items-center space-x-1">
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
+                                <div class="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div class="text-white text-xs font-medium">9:41</div>
+                            <div class="flex items-center space-x-1">
+                                <div class="w-3 h-1.5 sm:w-4 sm:h-2 bg-white rounded-sm"></div>
+                                <div class="w-1 h-1 bg-white rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Home Indicator Overlay -->
+                        <div
+                            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white rounded-full opacity-80">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screenshot Info -->
+            <div id="modal-info"
+                class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-center bg-black bg-opacity-50 rounded-lg px-4 py-2 z-20">
+                <h3 id="modal-title" class="font-semibold text-lg"></h3>
+                <p id="modal-description" class="text-sm text-gray-300"></p>
+                <p id="modal-counter" class="text-xs text-gray-400 mt-1"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technical Details -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12">Technical Implementation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-6">Tech Stack</h3>
+                    <div id="tech-stack-container" class="space-y-4">
+                        <!-- Tech stack items will be dynamically loaded here -->
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold mb-6">Development Process</h3>
+                    <div id="development-process-container" class="space-y-6">
+                        <!-- Development process items will be dynamically loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Challenges & Solutions -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12">Challenges & Solutions</h2>
+            <div id="challenges-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Dynamic challenges and solutions will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Results & Impact -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12">Results & Impact</h2>
+            <div id="results-container" class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <!-- Results and impact will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Portfolio -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-6">View More Projects</h2>
+            <p class="text-lg text-gray-600 mb-8">Explore other projects in my portfolio</p>
+                            <a href="../index.html#projects"
+                class="bg-indigo-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Back
+                to Portfolio</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-600 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 [Your Name]. All rights reserved.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

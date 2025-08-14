@@ -1,158 +1,282 @@
-# Mobile Developer Portfolio
+# Portfolio Website
 
-A professional, responsive portfolio website showcasing mobile app development projects built with Flutter, React Native, and other cutting-edge technologies.
+A dynamic, customizable portfolio website for mobile developers with Firebase integration and image proxy server.
 
-## 🚀 Features
+## 🚀 Live Demo
 
-- **Responsive Design**: Optimized for all devices and screen sizes
-- **Dynamic Content**: Firebase-powered content management
-- **SEO Optimized**: Comprehensive meta tags, structured data, and semantic HTML
-- **Accessibility**: WCAG compliant with screen reader support
-- **Performance**: Fast loading with optimized assets
-- **Modern UI**: Beautiful animations and glass morphism effects
+Visit: [Your Portfolio](https://yourusername.github.io/portfolio)
 
-## 🛠️ Technologies Used
+## 📋 Features
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
+- **Dynamic Content Management** - Admin panel for easy content updates
+- **Firebase Integration** - Real-time data persistence
+- **Image Proxy Server** - Prevents Google CDN rate limiting
+- **Responsive Design** - Works on all devices
+- **Project Showcase** - Detailed project pages with screenshots
+- **Contact Integration** - Direct contact links
+- **Resume Download** - PDF resume generation
+
+## 🛠️ Tech Stack
+
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Styling**: Tailwind CSS
-- **Backend**: Firebase (Firestore, Authentication)
-- **Deployment**: Static hosting ready
-- **Performance**: Optimized images, lazy loading, preconnect
+- **Backend**: Node.js, Express.js
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Auth
+- **Deployment**: GitHub Pages, Firebase Hosting
 
-## 📱 Mobile Development Focus
+## 📦 Installation
 
-This portfolio specializes in:
-- **Flutter Development**: Cross-platform mobile apps
-- **React Native**: Native mobile applications
-- **Mobile UI/UX**: Intuitive user experiences
-- **App Store Deployment**: Google Play & Apple App Store
-- **Firebase Integration**: Backend services and authentication
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Firebase account
+- GitHub account
 
-## 🔍 SEO Features
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourusername/portfolio.git
+cd portfolio
+```
 
-### Meta Tags
-- Comprehensive Open Graph tags for social media sharing
-- Twitter Card optimization
-- Proper title and description tags
-- Canonical URLs
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-### Structured Data
-- Person schema for developer information
-- WebSite schema for portfolio details
-- Breadcrumb navigation
-- SoftwareApplication schema for projects
+### 3. Firebase Setup
+1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com/)
+2. Enable Firestore Database
+3. Enable Authentication (Email/Password)
+4. Copy your Firebase config to `config/firebase-config.js`
 
-### Technical SEO
-- Semantic HTML5 structure
-- Proper heading hierarchy (H1-H6)
-- Alt text for all images
-- Internal linking strategy
-- XML sitemap
-- Robots.txt configuration
+### 4. Start Development Server
+```bash
+# Start the image proxy server
+npm start
 
-### Performance
-- Preconnect to external domains
-- DNS prefetch for faster loading
-- Optimized image loading
-- Minimal JavaScript footprint
+# For development with auto-restart
+npm run dev
+```
+
+## 🌐 GitHub Pages Deployment
+
+### Method 1: Automatic Deployment (Recommended)
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Initial portfolio setup"
+   git push origin main
+   ```
+
+2. **Enable GitHub Pages:**
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Pages**
+   - Select **Source**: "Deploy from a branch"
+   - Select **Branch**: "gh-pages" (will be created automatically)
+   - Click **Save**
+
+3. **Configure Secrets (Optional):**
+   - Go to **Settings** → **Secrets and variables** → **Actions**
+   - Add these secrets if you want custom domain or Firebase deployment:
+     - `CUSTOM_DOMAIN`: Your custom domain (optional)
+     - `FIREBASE_TOKEN`: Firebase CI token
+     - `FIREBASE_PROJECT_ID`: Your Firebase project ID
+
+4. **Automatic Deployment:**
+   - Every push to `main` branch will automatically deploy to GitHub Pages
+   - Your site will be available at: `https://yourusername.github.io/portfolio`
+
+### Method 2: Manual Deployment
+
+1. **Build and Deploy:**
+   ```bash
+   # Install GitHub Pages deployment tool
+   npm install -g gh-pages
+
+   # Deploy to GitHub Pages
+   gh-pages -d . -t true
+   ```
+
+2. **Enable GitHub Pages** (same as Method 1, step 2)
+
+## 🔧 Configuration
+
+### Firebase Configuration
+Update `config/firebase-config.js` with your Firebase project details:
+
+```javascript
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project-id",
+  storageBucket: "your-project.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "your-app-id"
+};
+```
+
+### Image Proxy Server
+The proxy server runs on port 3000 by default. For production:
+
+1. **Deploy to a cloud service** (Heroku, Vercel, Railway, etc.)
+2. **Update the proxy URL** in `assets/js/image-cache.js`:
+
+```javascript
+// Change from localhost to your deployed server URL
+const proxyUrl = `https://your-proxy-server.com/proxy/image?url=${encodeURIComponent(url)}`;
+```
 
 ## 📁 Project Structure
 
 ```
 portfolio/
-├── index.html              # Main portfolio page
-├── project-detail.html     # Individual project details
-├── admin.html             # Content management interface
-├── firebase-config.js     # Firebase configuration
-├── sitemap.xml           # Search engine sitemap
-├── robots.txt            # Search engine directives
-├── site.webmanifest      # PWA manifest
-└── README.md            # Project documentation
+├── assets/
+│   ├── css/
+│   │   ├── main.css
+│   │   ├── admin.css
+│   │   └── project-detail.css
+│   ├── js/
+│   │   ├── main.js
+│   │   └── image-cache.js
+│   └── images/
+├── config/
+│   └── firebase-config.js
+├── pages/
+│   ├── admin.html
+│   └── project-detail.html
+├── cache/
+│   └── images/
+├── server.js
+├── package.json
+├── firebase.json
+└── README.md
 ```
 
-## 🚀 Getting Started
+## 🔐 Admin Access
 
-1. **Clone the repository**
+1. **Access Admin Panel:**
+   - Navigate to: `https://yourusername.github.io/portfolio/pages/admin.html`
+   - Or locally: `http://localhost:3000/pages/admin.html`
+
+2. **Login:**
+   - Use the email/password you set up in Firebase Authentication
+   - Or create a new user in Firebase Console
+
+3. **Manage Content:**
+   - Update portfolio information
+   - Add/edit projects
+   - Manage images and screenshots
+   - Monitor cache statistics
+
+## 🚀 Production Deployment
+
+### Option 1: GitHub Pages (Static Files Only)
+- ✅ Free hosting
+- ✅ Automatic deployment
+- ❌ No server-side features (image proxy won't work)
+
+### Option 2: Firebase Hosting + Cloud Functions
+1. **Deploy static files:**
    ```bash
-   git clone https://github.com/yourusername/portfolio.git
-   cd portfolio
+   npm run deploy:firebase
    ```
 
-2. **Set up Firebase**
-   - Create a Firebase project
-   - Enable Firestore and Authentication
-   - Update `firebase-config.js` with your credentials
+2. **Deploy proxy server as Cloud Function:**
+   - Convert `server.js` to Firebase Cloud Function
+   - Update proxy URLs in frontend
 
-3. **Run locally**
-   ```bash
-   python3 -m http.server 5040
-   ```
-   Visit `http://localhost:5040`
+### Option 3: Vercel/Netlify + Separate Backend
+1. **Deploy frontend to Vercel/Netlify**
+2. **Deploy proxy server to Railway/Render/Heroku**
+3. **Update proxy URLs**
 
-## 📊 SEO Performance
+## 🔍 Troubleshooting
 
-### PageSpeed Insights
-- **Mobile**: 95+ (Target: 90+)
-- **Desktop**: 98+ (Target: 90+)
+### Common Issues
 
-### Core Web Vitals
-- **LCP**: < 2.5s
-- **FID**: < 100ms
-- **CLS**: < 0.1
+1. **Images not loading:**
+   - Check if proxy server is running
+   - Verify Firebase configuration
+   - Check browser console for errors
 
-### Accessibility
-- **WCAG 2.1 AA** compliant
-- Screen reader friendly
-- Keyboard navigation support
-- High contrast ratios
+2. **Admin panel not working:**
+   - Ensure Firebase Authentication is enabled
+   - Check Firebase config in `config/firebase-config.js`
+   - Verify user exists in Firebase Console
 
-## 🔧 Customization
+3. **GitHub Pages not updating:**
+   - Check GitHub Actions tab for deployment status
+   - Verify branch name (main/master)
+   - Clear browser cache
 
-### Content Management
-- Use the admin panel to update portfolio content
-- Add new projects with screenshots
-- Update skills and experience
-- Manage contact information
+4. **Rate limiting errors:**
+   - Start the proxy server: `npm start`
+   - Check proxy server logs
+   - Clear image cache from admin panel
 
-### SEO Optimization
-- Update meta descriptions for each page
-- Add structured data for new content
-- Optimize images with descriptive alt text
-- Update sitemap.xml when adding new pages
+### Debug Commands
 
-## 📈 Analytics Integration
+```bash
+# Check server status
+curl http://localhost:3000/health
 
-Ready for Google Analytics, Google Search Console, and other tracking tools:
-- Google Analytics 4
-- Google Search Console
-- Facebook Pixel
-- LinkedIn Insight Tag
+# View cache stats
+curl http://localhost:3000/cache/stats
 
-## 🌐 Deployment
+# Clear cache
+curl -X DELETE http://localhost:3000/cache/clear
 
-### Static Hosting
-- **Netlify**: Drag and drop deployment
-- **Vercel**: Git-based deployment
-- **GitHub Pages**: Free hosting
-- **Firebase Hosting**: Google's solution
+# Test proxy
+curl "http://localhost:3000/proxy/image?url=https://play-lh.googleusercontent.com/example.jpg"
+```
 
-### Custom Domain
-- Configure DNS settings
-- Update canonical URLs
-- Set up SSL certificate
-- Configure redirects
+## 📝 Customization
 
-## 📞 Contact
+### Styling
+- Edit `assets/css/main.css` for general styles
+- Modify Tailwind classes in HTML files
+- Update color scheme in CSS variables
 
-For collaboration opportunities or questions:
-- **Email**: [your-email@domain.com]
-- **LinkedIn**: [your-linkedin-profile]
-- **GitHub**: [your-github-profile]
+### Content
+- Use admin panel for dynamic content
+- Edit HTML files for static content
+- Update Firebase data structure as needed
+
+### Features
+- Add new sections in `index.html`
+- Create new pages in `pages/` directory
+- Extend Firebase functionality
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit changes: `git commit -m 'Add feature'`
+4. Push to branch: `git push origin feature-name`
+5. Submit a pull request
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 🙏 Acknowledgments
+
+- Firebase for backend services
+- Tailwind CSS for styling
+- GitHub for hosting
+- Express.js for proxy server
+
+## 📞 Support
+
+If you encounter any issues:
+
+1. Check the [troubleshooting section](#troubleshooting)
+2. Review Firebase Console for errors
+3. Check browser console for JavaScript errors
+4. Create an issue on GitHub
+
 ---
 
-**Built with ❤️ for the mobile development community** 
+**Happy coding! 🚀**

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- SEO Meta Tags for Admin (No Index) -->
+    <title>Portfolio Admin Dashboard</title>
+    <meta name="title" content="Portfolio Admin Dashboard">
+    <meta name="description" content="Administrative dashboard for portfolio management">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="author" content="Mobile Developer Portfolio">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Portfolio Admin Dashboard">
+    <meta property="og:description" content="Administrative dashboard for portfolio management">
+    <meta property="og:site_name" content="Mobile Developer Portfolio">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#4f46e5">
+    <meta name="msapplication-TileColor" content="#4f46e5">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="//www.gstatic.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="../config/firebase-config.js?v=1"></script>
+    <script src="../assets/js/image-cache.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/admin-screenshots.js"></script>
+    <script src="../assets/js/admin-main.js"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading admin panel...</div>
+    </div>
+    
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white py-4 sm:py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+                <h1 class="text-2xl sm:text-3xl font-bold">Portfolio Admin Dashboard</h1>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                    <span id="userEmail" class="text-sm text-white"></span>
+                    <div class="flex space-x-2 sm:space-x-4">
+                        <button id="logoutBtn" class="bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 text-sm">Logout</button>
+                        <a href="../index.html" class="bg-white text-indigo-600 px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-indigo-100 transition duration-300 text-sm">View Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <!-- Navigation Tabs -->
+        <div class="mb-4 sm:mb-8">
+            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-1 bg-white rounded-lg p-2 sm:p-1 shadow-sm">
+                <button onclick="showSection('main-page')" class="tab-btn active bg-indigo-600 text-white flex-1 py-3 sm:py-2 px-4 rounded-md font-medium transition duration-300 text-sm sm:text-base">Main Page</button>
+                <button onclick="showSection('cache')" class="tab-btn bg-gray-100 text-gray-700 flex-1 py-3 sm:py-2 px-4 rounded-md font-medium transition duration-300 text-sm sm:text-base">Cache</button>
+                <button onclick="showSection('projects')" class="tab-btn bg-gray-100 text-gray-700 flex-1 py-3 sm:py-2 px-4 rounded-md font-medium transition duration-300 text-sm sm:text-base">Projects</button>
+                <button onclick="showSection('preview')" class="tab-btn bg-gray-100 text-gray-700 flex-1 py-3 sm:py-2 px-4 rounded-md font-medium transition duration-300 text-sm sm:text-base">Preview</button>
+            </div>
+        </div>
+
+        <!-- Main Page Content Section -->
+        <div id="main-page" class="section-content">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+                <!-- Hero Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Hero Section</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                            <input type="text" id="hero-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-base" placeholder="Enter your name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tagline</label>
+                            <input type="text" id="hero-tagline" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="A Passionate Mobile Developer Crafting Seamless Apps">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Portfolio Title</label>
+                            <input type="text" id="portfolio-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="My Portfolio">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">About Section</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+                            <div class="space-y-2">
+                                <input type="file" id="profile-image-file" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <p class="text-sm text-gray-500">Or enter image URL:</p>
+                                <input type="url" id="profile-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://example.com/profile.jpg">
+                            </div>
+                            <div id="profile-preview" class="mt-2 hidden">
+                                <img id="profile-preview-img" class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">About Me Text</label>
+                            <textarea id="about-text" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Write your about me description..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Years of Experience</label>
+                            <input type="number" id="experience-years" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Skills Section</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Skills (comma separated)</label>
+                            <input type="text" id="skills-list" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Swift, Kotlin, Flutter, React Native, Firebase, REST APIs, UI/UX Design, Git">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Career Timeline Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Career Timeline</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-700">Timeline Items</h3>
+                            <div class="flex space-x-2">
+                                <button onclick="addTimelineItem()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add Item</button>
+                                <button onclick="toggleReorderMode()" id="reorder-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Reorder</button>
+                            </div>
+                        </div>
+                        <div id="reorder-instructions" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                            <p class="text-blue-800 text-sm">💡 Drag and drop items to reorder them. Click "Save Order" when done.</p>
+                        </div>
+                        <div id="timeline-items-container" class="space-y-4">
+                            <!-- Timeline items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resume Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Resume Section</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Resume PDF URL</label>
+                            <input type="url" id="resume-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://example.com/resume.pdf">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Upload Resume PDF</label>
+                            <input type="file" id="resume-file" accept=".pdf" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <p class="text-sm text-gray-500 mt-1">Upload your resume PDF file</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div class="form-section p-4 sm:p-6">
+                    <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Contact Section</h2>
+                    <div class="space-y-3 sm:space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="contact-email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="your.email@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
+                            <input type="tel" id="contact-phone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="+1 (234) 567-890">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">LinkedIn URL</label>
+                            <input type="url" id="linkedin-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://linkedin.com/in/yourprofile">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">GitHub URL</label>
+                            <input type="url" id="github-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://github.com/yourprofile">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="mt-6 sm:mt-8 text-center">
+                <button onclick="saveMainPageContent()" class="w-full sm:w-auto bg-indigo-600 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Save Main Page Content</button>
+            </div>
+        </div>
+
+        <!-- Image Cache Management Section -->
+        <div id="cache" class="section-content hidden">
+            <div class="form-section p-4 sm:p-6 mb-6 sm:mb-8">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Image Cache Management</h2>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-blue-800">Rate Limiting Protection</h3>
+                            <p class="text-sm text-blue-700 mt-1">
+                                This system automatically caches Google Play Store images to prevent 429 rate limiting errors. 
+                                Images are cached locally and retried with exponential backoff when they fail.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg border">
+                        <h3 class="font-semibold text-gray-800 mb-2">Cache Statistics</h3>
+                        <div id="cache-stats" class="text-sm text-gray-600">
+                            <p>Cached: <span id="cached-count">0</span></p>
+                            <p>Failed: <span id="failed-count">0</span></p>
+                            <p>Total: <span id="total-count">0</span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg border">
+                        <h3 class="font-semibold text-gray-800 mb-2">Cache Actions</h3>
+                        <div class="space-y-2">
+                            <button onclick="clearImageCache()" class="w-full bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition duration-300">
+                                Clear Browser Cache
+                            </button>
+                            <button onclick="clearServerCache()" class="w-full bg-orange-600 text-white px-4 py-2 rounded text-sm hover:bg-orange-700 transition duration-300">
+                                Clear Server Cache
+                            </button>
+                            <button onclick="refreshCacheStats()" class="w-full bg-indigo-600 text-white px-4 py-2 rounded text-sm hover:bg-indigo-700 transition duration-300">
+                                Refresh Stats
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 rounded-lg border">
+                        <h3 class="font-semibold text-gray-800 mb-2">Tips</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Images are cached automatically</li>
+                            <li>• Failed images retry with delays</li>
+                            <li>• Clear cache if images are stuck</li>
+                            <li>• Cache persists across sessions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div id="projects" class="section-content hidden">
+            <div class="form-section p-4 sm:p-6 mb-6 sm:mb-8">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Add New Project</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Name</label>
+                        <input type="text" id="project-name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Task Manager App">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Image</label>
+                        <div class="space-y-2">
+                            <input type="file" id="project-image-file" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <p class="text-sm text-gray-500">Or enter image URL:</p>
+                            <input type="url" id="project-image" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://example.com/project-image.jpg">
+                        </div>
+                        <div id="project-preview" class="mt-2 hidden">
+                            <img id="project-preview-img" class="w-32 h-20 rounded object-cover border-2 border-gray-200">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Short Description</label>
+                        <input type="text" id="project-description" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="A productivity app built with Flutter...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tech Stack (comma separated)</label>
+                        <input type="text" id="project-tech" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Flutter, Dart, Firebase">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Detailed Description</label>
+                        <textarea id="project-detail-description" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Detailed project description for the detail page..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Development Duration</label>
+                        <input type="text" id="project-duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="3 months">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Google Play URL</label>
+                        <input type="url" id="project-demo" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://play.google.com/store/apps/details?id=com.example.app">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">App Store URL</label>
+                        <input type="url" id="project-source" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://apps.apple.com/app/id123456789">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">App Store Rating (1-5)</label>
+                        <input type="number" id="project-rating" min="1" max="5" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="4.8">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Active Users</label>
+                        <input type="text" id="project-users" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="10K+">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User Retention</label>
+                        <input type="text" id="project-retention" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="95%">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Key Features (one per line)</label>
+                        <textarea id="project-features" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Task creation and categorization&#10;Smart reminders and notifications&#10;Cross-device synchronization&#10;Progress tracking and analytics&#10;Offline functionality"></textarea>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Challenges & Solutions (one per line, format: Challenge|Solution)</label>
+                        <textarea id="project-challenges" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Real-time sync across devices|Used Firebase Firestore with offline persistence&#10;UI for different screen sizes|Implemented responsive design patterns&#10;Performance optimization|Efficient background processing"></textarea>
+                    </div>
+                    
+                    <!-- Technical Implementation Section -->
+                    <div class="lg:col-span-2">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Technical Implementation</h3>
+                    </div>
+                    
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tech Stack Details (one per line, format: Technology|Description)</label>
+                        <textarea id="project-tech-stack" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Frontend Framework|Flutter for cross-platform development&#10;Programming Language|Dart for mobile app development&#10;Backend Services|Firebase for authentication and database&#10;Database|Cloud Firestore for real-time data sync&#10;Authentication|Firebase Auth for user management&#10;State Management|Provider for app state management"></textarea>
+                    </div>
+                    
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Development Process (one per line, format: Step|Description)</label>
+                        <textarea id="project-development-process" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Research & Planning|Conducted user research, defined requirements, and created project roadmap&#10;UI/UX Design|Created wireframes, mockups, and interactive prototypes&#10;Development|Implemented core features using Flutter and Firebase integration&#10;Testing|Comprehensive testing across multiple devices and platforms&#10;Deployment|Published to Google Play Store and App Store"></textarea>
+                    </div>
+                    
+                    <!-- Screenshots Section -->
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Screenshots</label>
+                        <div class="space-y-4">
+                            <!-- Screenshot Upload Area -->
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Upload Screenshot Image</label>
+                                        <input type="file" id="screenshot-file" accept="image/*" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <p class="text-sm text-gray-500 mt-1">Upload image file (JPG, PNG, WebP)</p>
+                                    </div>
+                                    <div class="text-gray-500">OR</div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Screenshot URL</label>
+                                        <input type="url" id="screenshot-url" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="https://example.com/screenshot.jpg">
+                                        <p class="text-sm text-gray-500 mt-1">Enter image URL</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Screenshot Title</label>
+                                        <input type="text" id="screenshot-title" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g., Home Screen">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                        <textarea id="screenshot-description" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Brief description of the screenshot"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Orientation</label>
+                                        <select id="screenshot-orientation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="auto">Auto-detect (recommended)</option>
+                                            <option value="portrait">Portrait (Mobile)</option>
+                                            <option value="landscape">Landscape (Tablet/Desktop)</option>
+                                        </select>
+                                        <p class="text-sm text-gray-500 mt-1">Choose orientation or let the system auto-detect from image dimensions</p>
+                                    </div>
+                                    <button type="button" onclick="addScreenshot()" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition duration-300">
+                                        Add Screenshot
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Screenshots Preview -->
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-700 mb-2">Current Screenshots (Drag to reorder)</h4>
+                                <div id="screenshots-preview" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <!-- Screenshots will be displayed here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <button onclick="testFields()" class="w-full sm:w-auto bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">Test Fields</button>
+                    <button onclick="addProject()" class="w-full sm:w-auto bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">Add Project</button>
+                    <button onclick="cancelEdit()" id="cancel-edit-btn" class="w-full sm:w-auto bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition duration-300 hidden">Cancel Edit</button>
+                </div>
+            </div>
+
+            <!-- Existing Projects List -->
+            <div class="form-section p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Existing Projects</h2>
+                    <button onclick="loadProjects()" class="bg-gray-600 text-white px-4 py-2 rounded text-sm hover:bg-gray-700">Refresh Projects</button>
+                </div>
+                <div id="projects-list" class="space-y-4">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Preview Section -->
+        <div id="preview" class="section-content hidden">
+            <div class="form-section p-4 sm:p-6">
+                <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Preview Changes</h2>
+                <div class="text-center">
+                    <p class="text-gray-600 mb-4">Click the button below to preview your portfolio with the current changes:</p>
+                    <a href="../index.html" target="_blank" class="bg-indigo-600 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Open Portfolio Preview</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
