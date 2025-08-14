@@ -102,7 +102,7 @@ function setupAuthNavigation() {
             if (user) {
                 // User is logged in - show admin links
                 console.log('✅ User authenticated, showing admin links');
-                const adminPath = '/admin'; // Use clean URL
+                const adminPath = '/pages/admin.html'; // Point directly to admin file for GitHub Pages
                 
                 if (adminLink) {
                     adminLink.classList.remove('hidden');
@@ -166,7 +166,7 @@ function setupSmoothScrolling() {
 // Function to render navigation bar HTML
 function renderNavigationBar(isProjectDetail = false) {
     const basePath = isProjectDetail ? '../' : '';
-    const adminPath = '/admin'; // Use clean URL
+    const adminPath = '/pages/admin.html'; // Point directly to admin file for GitHub Pages
     
     return `
         <nav class="bg-white shadow-lg fixed w-full top-0 z-50" role="navigation" aria-label="Main navigation">
@@ -250,7 +250,7 @@ function updateAdminLinkVisibility() {
         if (user) {
             // User is logged in - show admin links
             console.log('✅ Showing admin links for authenticated user');
-            const adminPath = '/admin'; // Use clean URL
+            const adminPath = '/pages/admin.html'; // Point directly to admin file for GitHub Pages
             
             if (adminLink) {
                 adminLink.classList.remove('hidden');
