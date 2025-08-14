@@ -1,4 +1,4 @@
-name: Validate and Test Deployment
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  # Manual trigger
 
 jobs:
-  validate:
+  deploy:
     runs-on: ubuntu-latest
     
     steps:
@@ -24,29 +24,27 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Validate package.json
+      - name: Validate build
         run: npm run build
 
-      - name: Test server startup
-        run: timeout 10s npm start || true
-
-      - name: Check file structure
+      - name: Create static site
         run: |
-          echo "Checking essential files..."
-          ls -la
-          echo "Checking assets directory..."
-          ls -la assets/
-          echo "Checking pages directory..."
-          ls -la pages/
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .  # Upload the entire project for static site
+          echo "Creating static site for GitHub Pages..."
+          mkdir -p dist
+          cp -r index.html dist/
+          cp -r pages dist/
+          cp -r assets dist/
+          cp -r images dist/
+          cp -r config dist/
+          cp -r cache dist/
+          cp robots.txt dist/
+          cp sitemap.xml dist/
+          cp site.webmanifest dist/
+          echo "Static site created successfully!"
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
