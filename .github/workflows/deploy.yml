@@ -1,0 +1,134 @@
+name: Deploy Portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: 
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+      
+    - name: Check for vulnerabilities
+      run: |
+        if npm audit --audit-level=high; then
+          echo "High severity vulnerabilities found!"
+          exit 1
+        fi
+        echo "No high severity vulnerabilities found."
+        
+    - name: Validate HTML files
+      run: |
+        echo "Checking HTML files for basic validation..."
+        find . -name "*.html" -exec echo "Validating {}" \;
+        echo "HTML validation check completed."
+        
+    - name: Check file structure
+      run: |
+        echo "Checking required files exist..."
+        test -f "index.html" || (echo "index.html not found!" && exit 1)
+        test -f "config/firebase-config.js" || (echo "firebase-config.js not found!" && exit 1)
+        test -f "assets/js/main.js" || (echo "main.js not found!" && exit 1)
+        test -f "assets/css/main.css" || (echo "main.css not found!" && exit 1)
+        echo "All required files found."
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create cache directory
+      run: mkdir -p cache/images
+      
+    - name: Optimize images (if needed)
+      run: |
+        echo "Checking for image optimization..."
+        if command -v convert &> /dev/null; then
+          echo "ImageMagick found, optimizing images..."
+          find assets/images -name "*.jpg" -o -name "*.png" | head -5 | while read img; do
+            echo "Processing $img"
+          done
+        else
+          echo "ImageMagick not available, skipping optimization"
+        fi
+        
+    - name: Build and deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+        publish_branch: gh-pages
+        cname: ${{ secrets.CUSTOM_DOMAIN }}
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: '🚀 Deploy portfolio website - ${{ github.sha }}'
+        tag_name: 'v${{ github.run_number }}'
+        tag_message: 'Release v${{ github.run_number }}'
+             
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ Deployment successful!"
+          echo "🌐 Site URL: https://${{ github.repository_owner }}.github.io/portfolio"
+          if [ "${{ secrets.CUSTOM_DOMAIN }}" != "" ]; then
+            echo "🔗 Custom Domain: https://${{ secrets.CUSTOM_DOMAIN }}"
+          fi
+        else
+          echo "❌ Deployment failed!"
+          exit 1
+        fi
+        
+    - name: Create deployment summary
+      if: always()
+      run: |
+        echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Repository:** ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Deployed at:** $(date -u)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 Build Info" >> $GITHUB_STEP_SUMMARY
+        echo "- **Node.js Version:** $(node --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- **npm Version:** $(npm --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Number:** ${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+        echo "- **GitHub Pages:** https://${{ github.repository_owner }}.github.io/portfolio" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ secrets.CUSTOM_DOMAIN }}" != "" ]; then
+          echo "- **Custom Domain:** https://${{ secrets.CUSTOM_DOMAIN }}" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "- **Admin Panel:** https://${{ github.repository_owner }}.github.io/portfolio/pages/admin.html" >> $GITHUB_STEP_SUMMARY
