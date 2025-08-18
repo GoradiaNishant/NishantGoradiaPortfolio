@@ -23,7 +23,7 @@ const NAV_CONFIG = {
     getPath(page) {
         const base = this.getBasePath();
         if (page === 'home') {
-            return base + 'index.html';
+            return base;
         } else if (page === 'admin') {
             return base + 'admin/';
         } else if (page === 'login') {
@@ -60,6 +60,7 @@ class Navigation {
         const navHTML = this.generateNavigationHTML();
         navContainer.innerHTML = navHTML;
         console.log('✅ Navigation rendered');
+        console.log('📍 Nav container content:', navContainer.innerHTML.substring(0, 200));
     }
     
     generateNavigationHTML() {
