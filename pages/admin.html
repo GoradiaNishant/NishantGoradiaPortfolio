@@ -29,10 +29,11 @@
     <meta name="msapplication-TileColor" content="#4f46e5">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="../assets/images/favicon/site.webmanifest">
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,14 +55,14 @@
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <script src="../config/firebase-config.js?v=1"></script>
+    <script src="../config/firebase-config.js"></script>
     <script>
         // Fallback if FirebaseDB is not loaded
         if (typeof FirebaseDB === 'undefined') {
             console.error('❌ FirebaseDB not loaded from config file');
             // Try alternative path
             const script = document.createElement('script');
-            script.src = '../config/firebase-config.js?v=1';
+            script.src = '../config/firebase-config.js';
             script.onerror = function() {
                 console.error('❌ Failed to load FirebaseDB from alternative path');
                 if (document.getElementById('loading-overlay')) {
@@ -80,12 +81,12 @@
         }
     </script>
     <script src="../assets/js/image-cache.js"></script>
-    <script src="../assets/js/admin.js?v=2"></script>
+    <script src="../assets/js/admin.js"></script>
     <script src="../assets/js/admin-screenshots.js"></script>
     <script src="../assets/js/admin-main.js"></script>
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="stylesheet" href="../assets/css/menu.css">
-    <script src="../assets/js/menu.js?v=1"></script>
+    <script src="../assets/js/menu.js"></script>
 </head>
 <body class="bg-gray-100">
     <!-- Loading Overlay -->
