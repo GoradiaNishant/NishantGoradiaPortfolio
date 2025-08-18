@@ -44,7 +44,7 @@ function checkAuthentication() {
                             <a href="login.html" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Go to Login
                             </a>
-                            <a href="javascript:void(0)" onclick="window.NavigationUtils.navigateTo('home')" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a href="../index.html" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Back to Portfolio
                             </a>
                         </div>
@@ -408,7 +408,7 @@ async function handleLogout() {
     try {
         await firebase.auth().signOut();
         console.log('✅ Logout successful');
-        window.location.href = window.NavigationUtils.getPath('login');
+        window.location.href = '../pages/login.html';
     } catch (error) {
         console.error('❌ Logout error:', error);
         alert('Error logging out. Please try again.');
