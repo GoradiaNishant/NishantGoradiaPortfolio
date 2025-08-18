@@ -9,48 +9,58 @@ let sortableInstance = null;
 let isReorderMode = false;
 
 // Initialize the page when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 Admin page initializing...');
-    
+
     // Check authentication
     checkAuthentication();
-    
+
     // Setup event listeners
     setupEventListeners();
-    
+
     // Initialize tabs
     initializeTabs();
-    
+
     // Initialize cache stats
     refreshCacheStats();
-    
+
     // Load saved data
     loadSavedData();
 });
 
 // Authentication check
 function checkAuthentication() {
-    firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().onAuthStateChanged(function (user) {
         if (!user) {
+
+            const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+            const baseHref = isLocalhost
+                ? '/'
+                : '/NishantGoradiaPortfolio/';
+
+
             // User is not logged in, show login prompt instead of redirect
             document.body.innerHTML = `
                 <div class="min-h-screen bg-gray-50 flex items-center justify-center">
                     <div class="max-w-md w-full space-y-8 text-center">
-                        <div>
-                            <h2 class="text-3xl font-bold text-gray-900">Admin Access Required</h2>
-                            <p class="mt-2 text-sm text-gray-600">You need to be logged in to access the admin panel.</p>
-                        </div>
-                        <div class="space-y-4">
-                            <a href="pages/login.html" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Go to Login
-                            </a>
-                            <a href="index.html" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                Back to Portfolio
-                            </a>
-                        </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">Admin Access Required</h2>
+                        <p class="mt-2 text-sm text-gray-600">You need to be logged in to access the admin panel.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <a href="${baseHref}pages/login.html"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                        Go to Login
+                        </a>
+                        <a href="${baseHref}index.html"
+                        class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        Back to Portfolio
+                        </a>
+                    </div>
                     </div>
                 </div>
-            `;
+                `;
         } else {
             // User is logged in, show their email
             const userEmailElement = document.getElementById('userEmail');
@@ -58,7 +68,7 @@ function checkAuthentication() {
                 userEmailElement.textContent = user.email;
             }
             console.log('✅ User authenticated:', user.email);
-            
+
             // Hide loading overlay
             hideLoading();
         }
@@ -93,14 +103,14 @@ function setupEventListeners() {
 // Load saved data on page load
 async function loadSavedData() {
     showLoading('Loading admin panel...');
-    
+
     try {
         // Initialize tabs first
         initializeTabs();
-        
+
         showLoading('Loading portfolio data...');
         const savedData = await FirebaseDB.getPortfolioData();
-        
+
         // Populate form fields with saved data
         if (savedData.heroName) document.getElementById('hero-name').value = savedData.heroName;
         if (savedData.heroTagline) document.getElementById('hero-tagline').value = savedData.heroTagline;
@@ -123,22 +133,22 @@ async function loadSavedData() {
         if (savedData.githubUrl) document.getElementById('github-url').value = savedData.githubUrl;
         if (savedData.resumeUrl) document.getElementById('resume-url').value = savedData.resumeUrl;
         if (savedData.careerTimeline) loadTimelineItems(savedData.careerTimeline);
-        
+
         // Setup image uploads and load previews
         setupImageUploads();
         loadImagePreviews();
-        
+
         // Load projects
         showLoading('Loading projects...');
         loadProjects();
-        
+
         // Debug: Check if projects are saved
         const projects = await FirebaseDB.getProjects();
         console.log('Projects in Firebase:', projects);
         console.log('Number of projects:', projects.length);
-        
+
         console.log('✅ Admin panel loaded successfully');
-        
+
     } catch (error) {
         console.error('❌ Error loading admin panel:', error);
         alert('Error loading admin panel. Please refresh the page.');
@@ -151,7 +161,7 @@ async function loadSavedData() {
 function addTimelineItem() {
     const container = document.getElementById('timeline-items-container');
     const itemId = Date.now();
-    
+
     const timelineItem = document.createElement('div');
     timelineItem.className = 'timeline-item bg-gray-50 p-4 rounded-lg border';
     timelineItem.innerHTML = `
@@ -182,7 +192,7 @@ function addTimelineItem() {
             </div>
         </div>
     `;
-    
+
     container.appendChild(timelineItem);
 }
 
@@ -193,7 +203,7 @@ function removeTimelineItem(button) {
 function loadTimelineItems(timelineData) {
     const container = document.getElementById('timeline-items-container');
     container.innerHTML = '';
-    
+
     if (timelineData && timelineData.length > 0) {
         timelineData.forEach(item => {
             const timelineItem = document.createElement('div');
@@ -226,7 +236,7 @@ function loadTimelineItems(timelineData) {
                     </div>
                 </div>
             `;
-            
+
             container.appendChild(timelineItem);
         });
     }
@@ -237,12 +247,12 @@ function handleImageUpload(fileInput, previewId, previewImgId) {
     const file = fileInput.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const preview = document.getElementById(previewId);
             const previewImg = document.getElementById(previewImgId);
             previewImg.src = e.target.result;
             preview.classList.remove('hidden');
-            
+
             // Store the image data in localStorage
             localStorage.setItem(`${previewId}_data`, e.target.result);
         };
@@ -254,12 +264,12 @@ function handleImageUpload(fileInput, previewId, previewImgId) {
 function loadImagePreviews() {
     const profileData = localStorage.getItem('profile-preview_data');
     const projectData = localStorage.getItem('project-preview_data');
-    
+
     if (profileData) {
         document.getElementById('profile-preview-img').src = profileData;
         document.getElementById('profile-preview').classList.remove('hidden');
     }
-    
+
     if (projectData) {
         document.getElementById('project-preview-img').src = projectData;
         document.getElementById('project-preview').classList.remove('hidden');
@@ -271,21 +281,21 @@ function setupImageUploads() {
     const profileImageFile = document.getElementById('profile-image-file');
     const projectImageFile = document.getElementById('project-image-file');
     const resumeFile = document.getElementById('resume-file');
-    
+
     if (profileImageFile) {
-        profileImageFile.addEventListener('change', function() {
+        profileImageFile.addEventListener('change', function () {
             handleImageUpload(this, 'profile-preview', 'profile-preview-img');
         });
     }
-    
+
     if (projectImageFile) {
-        projectImageFile.addEventListener('change', function() {
+        projectImageFile.addEventListener('change', function () {
             handleImageUpload(this, 'project-preview', 'project-preview-img');
         });
     }
-    
+
     if (resumeFile) {
-        resumeFile.addEventListener('change', function() {
+        resumeFile.addEventListener('change', function () {
             handlePDFUpload(this, document.getElementById('resume-url'));
         });
     }
@@ -297,7 +307,7 @@ function handlePDFUpload(fileInput, urlInput) {
     if (file) {
         if (file.type === 'application/pdf') {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 // For PDF files, we'll store the data URL
                 // In a real application, you'd upload to a cloud storage service
                 urlInput.value = e.target.result;
@@ -317,16 +327,16 @@ function showSection(sectionId) {
     document.querySelectorAll('.section-content').forEach(section => {
         section.classList.add('hidden');
     });
-    
+
     // Remove active class from all tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active', 'bg-indigo-600', 'text-white');
         btn.classList.add('bg-gray-100', 'text-gray-700');
     });
-    
+
     // Show selected section
     document.getElementById(sectionId).classList.remove('hidden');
-    
+
     // Add active class to clicked tab
     event.target.classList.add('active', 'bg-indigo-600', 'text-white');
     event.target.classList.remove('bg-gray-100', 'text-gray-700');
@@ -339,7 +349,7 @@ function initializeTabs() {
     document.getElementById('cache').classList.add('hidden');
     document.getElementById('projects').classList.add('hidden');
     document.getElementById('preview').classList.add('hidden');
-    
+
     // Initialize cache stats if available
     setTimeout(() => {
         refreshCacheStats();
@@ -349,14 +359,14 @@ function initializeTabs() {
 // Load saved data on page load
 async function loadSavedData() {
     showLoading('Loading admin panel...');
-    
+
     try {
         // Initialize tabs first
         initializeTabs();
-        
+
         showLoading('Loading portfolio data...');
         const savedData = await FirebaseDB.getPortfolioData();
-        
+
         // Populate form fields with saved data
         if (savedData.heroName) document.getElementById('hero-name').value = savedData.heroName;
         if (savedData.heroTagline) document.getElementById('hero-tagline').value = savedData.heroTagline;
@@ -379,22 +389,22 @@ async function loadSavedData() {
         if (savedData.githubUrl) document.getElementById('github-url').value = savedData.githubUrl;
         if (savedData.resumeUrl) document.getElementById('resume-url').value = savedData.resumeUrl;
         if (savedData.careerTimeline) loadTimelineItems(savedData.careerTimeline);
-        
+
         // Setup image uploads and load previews
         setupImageUploads();
         loadImagePreviews();
-        
+
         // Load projects
         showLoading('Loading projects...');
         loadProjects();
-        
+
         // Debug: Check if projects are saved
         const projects = await FirebaseDB.getProjects();
         console.log('Projects in Firebase:', projects);
         console.log('Number of projects:', projects.length);
-        
+
         console.log('✅ Admin panel loaded successfully');
-        
+
     } catch (error) {
         console.error('❌ Error loading admin panel:', error);
         alert('Error loading admin panel. Please refresh the page.');
@@ -450,7 +460,7 @@ function refreshCacheStats() {
         const cachedCountElement = document.getElementById('cached-count');
         const failedCountElement = document.getElementById('failed-count');
         const totalCountElement = document.getElementById('total-count');
-        
+
         if (cachedCountElement) cachedCountElement.textContent = stats.cached;
         if (failedCountElement) failedCountElement.textContent = stats.failed;
         if (totalCountElement) totalCountElement.textContent = stats.total;
@@ -458,7 +468,7 @@ function refreshCacheStats() {
         const cachedCountElement = document.getElementById('cached-count');
         const failedCountElement = document.getElementById('failed-count');
         const totalCountElement = document.getElementById('total-count');
-        
+
         if (cachedCountElement) cachedCountElement.textContent = '0';
         if (failedCountElement) failedCountElement.textContent = '0';
         if (totalCountElement) totalCountElement.textContent = '0';
@@ -469,13 +479,13 @@ async function clearServerCache() {
     try {
         // Check if we're on localhost (development) or production
         const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        
+
         if (isLocalhost) {
             // Try to connect to local server
             const response = await fetch('http://localhost:3000/cache/clear', {
                 method: 'DELETE'
             });
-            
+
             if (response.ok) {
                 const result = await response.json();
                 alert(`Server cache cleared: ${result.message}`);
@@ -499,11 +509,11 @@ async function clearServerCache() {
 // Save main page content
 async function saveMainPageContent() {
     showLoading('Saving portfolio data...');
-    
+
     try {
         // Get uploaded image data if available
         const profileImageData = localStorage.getItem('profile-preview_data');
-        
+
         // Get timeline items
         const timelineItems = [];
         const timelineContainers = document.querySelectorAll('.timeline-item');
@@ -536,7 +546,7 @@ async function saveMainPageContent() {
 
         // Save to Firebase
         const success = await FirebaseDB.savePortfolioData(data);
-        
+
         if (success) {
             alert('Main page content saved successfully to Firebase!');
         } else {
@@ -553,13 +563,13 @@ async function saveMainPageContent() {
 // Test fields function
 function testFields() {
     console.log('🧪 Testing field capture...');
-    
+
     const techStackField = document.getElementById('project-tech-stack');
     const developmentProcessField = document.getElementById('project-development-process');
-    
+
     console.log('🔍 Tech Stack field element:', techStackField);
     console.log('🔍 Development Process field element:', developmentProcessField);
-    
+
     if (techStackField) {
         console.log('✅ Tech Stack field found');
         console.log('🔍 Tech Stack field value:', techStackField.value);
@@ -568,7 +578,7 @@ function testFields() {
     } else {
         console.log('❌ Tech Stack field NOT found');
     }
-    
+
     if (developmentProcessField) {
         console.log('✅ Development Process field found');
         console.log('🔍 Development Process field value:', developmentProcessField.value);
@@ -577,37 +587,37 @@ function testFields() {
     } else {
         console.log('❌ Development Process field NOT found');
     }
-    
+
     // Test creating project object
     const testProject = {
         techStack: techStackField ? techStackField.value : 'FIELD_NOT_FOUND',
         developmentProcess: developmentProcessField ? developmentProcessField.value : 'FIELD_NOT_FOUND'
     };
-    
+
     console.log('🧪 Test project object:', testProject);
 }
 
 // Add new project
 async function addProject() {
     showLoading('Adding project...');
-    
+
     try {
         // Get uploaded project image data if available
         const projectImageData = localStorage.getItem('project-preview_data');
-        
+
         // Get screenshots from the preview area
         const screenshots = getScreenshotsFromPreview();
 
         // Capture field values first
         const techStackValue = document.getElementById('project-tech-stack').value;
         const developmentProcessValue = document.getElementById('project-development-process').value;
-        
+
         console.log('🔍 Raw field values:');
         console.log('Tech Stack field value:', techStackValue);
         console.log('Development Process field value:', developmentProcessValue);
         console.log('Tech Stack field type:', typeof techStackValue);
         console.log('Development Process field type:', typeof developmentProcessValue);
-        
+
         const project = {
             name: document.getElementById('project-name').value,
             image: projectImageData || document.getElementById('project-image').value,
@@ -639,14 +649,14 @@ async function addProject() {
 
         // Add to Firebase
         const success = await FirebaseDB.addProject(project);
-        
+
         if (success) {
             // Clear form
             clearProjectForm();
-            
+
             // Refresh projects list
             loadProjects();
-            
+
             alert('Project added successfully to Firebase!');
         } else {
             alert('Error adding project. Please try again.');
@@ -676,15 +686,15 @@ function clearProjectForm() {
     document.getElementById('project-challenges').value = '';
     document.getElementById('project-tech-stack').value = '';
     document.getElementById('project-development-process').value = '';
-    
+
     // Clear screenshots
     clearScreenshots();
-    
+
     // Clear project image preview
     document.getElementById('project-image-file').value = '';
     document.getElementById('project-preview').classList.add('hidden');
     localStorage.removeItem('project-preview_data');
-    
+
     // Reset button to add state
     resetAddButton();
 }
@@ -693,17 +703,17 @@ function clearProjectForm() {
 async function loadProjects() {
     const projects = await FirebaseDB.getProjects();
     const projectsList = document.getElementById('projects-list');
-    
+
     console.log('Loading projects from Firebase:', projects);
     console.log('Projects list element:', projectsList);
-    
+
     projectsList.innerHTML = '';
-    
+
     if (projects.length === 0) {
         projectsList.innerHTML = '<p class="text-gray-500 text-center py-4">No projects found. Add your first project above!</p>';
         return;
     }
-    
+
     projects.forEach((project, index) => {
         const projectDiv = document.createElement('div');
         projectDiv.className = 'border border-gray-200 rounded-lg p-4';
@@ -727,11 +737,11 @@ async function loadProjects() {
 async function editProject(index) {
     const projects = await FirebaseDB.getProjects();
     const project = projects[index];
-    
+
     if (project) {
         // Store the current editing index
         window.currentEditingIndex = index;
-        
+
         // Populate form fields with project data
         document.getElementById('project-name').value = project.name || '';
         document.getElementById('project-image').value = project.image || '';
@@ -748,10 +758,10 @@ async function editProject(index) {
         document.getElementById('project-challenges').value = project.challenges || '';
         document.getElementById('project-tech-stack').value = project.techStack || '';
         document.getElementById('project-development-process').value = project.developmentProcess || '';
-        
+
         // Load screenshots
         loadScreenshotsToPreview(project.screenshots || []);
-        
+
         // Show project image preview if it's a data URL
         if (project.image && project.image.startsWith('data:image')) {
             document.getElementById('project-preview-img').src = project.image;
@@ -760,16 +770,16 @@ async function editProject(index) {
         } else {
             document.getElementById('project-preview').classList.add('hidden');
         }
-        
+
         // Change the add button to update button
         const addButton = document.querySelector('button[onclick="addProject()"]');
         addButton.textContent = 'Update Project';
-        addButton.onclick = function() { updateProject(index); };
+        addButton.onclick = function () { updateProject(index); };
         addButton.className = 'bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300';
-        
+
         // Show cancel button
         document.getElementById('cancel-edit-btn').classList.remove('hidden');
-        
+
         // Scroll to the form
         document.querySelector('#projects .form-section').scrollIntoView({ behavior: 'smooth' });
     }
@@ -779,14 +789,14 @@ async function editProject(index) {
 async function updateProject(index) {
     // Get uploaded project image data if available
     const projectImageData = localStorage.getItem('project-preview_data');
-    
+
     // Get screenshots from the preview area
     const screenshots = getScreenshotsFromPreview();
-    
+
     // Capture field values first
     const techStackValue = document.getElementById('project-tech-stack').value;
     const developmentProcessValue = document.getElementById('project-development-process').value;
-    
+
     const project = {
         name: document.getElementById('project-name').value,
         image: projectImageData || document.getElementById('project-image').value,
@@ -808,18 +818,18 @@ async function updateProject(index) {
 
     // Update in Firebase
     const success = await FirebaseDB.updateProject(index, project);
-    
+
     if (success) {
         // Clear form and reset button
         clearProjectForm();
         resetAddButton();
-        
+
         // Clear editing index
         window.currentEditingIndex = null;
-        
+
         // Refresh projects list
         loadProjects();
-        
+
         alert('Project updated successfully in Firebase!');
     } else {
         alert('Error updating project. Please try again.');
@@ -830,16 +840,16 @@ async function updateProject(index) {
 function cancelEdit() {
     // Clear the form
     clearProjectForm();
-    
+
     // Reset button to add state
     resetAddButton();
-    
+
     // Hide cancel button
     document.getElementById('cancel-edit-btn').classList.add('hidden');
-    
+
     // Clear editing index
     window.currentEditingIndex = null;
-    
+
     // Scroll to top of form
     document.querySelector('#projects .form-section').scrollIntoView({ behavior: 'smooth' });
 }
@@ -849,10 +859,10 @@ function resetAddButton() {
     const addButton = document.querySelector('button[onclick="updateProject()"]') || document.querySelector('button[onclick*="Project"]');
     if (addButton) {
         addButton.textContent = 'Add Project';
-        addButton.onclick = function() { addProject(); };
+        addButton.onclick = function () { addProject(); };
         addButton.className = 'bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300';
     }
-    
+
     // Hide cancel button
     document.getElementById('cancel-edit-btn').classList.add('hidden');
 }
@@ -875,12 +885,12 @@ function handleImageUpload(fileInput, previewId, previewImgId) {
     const file = fileInput.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             const preview = document.getElementById(previewId);
             const previewImg = document.getElementById(previewImgId);
             previewImg.src = e.target.result;
             preview.classList.remove('hidden');
-            
+
             // Store the image data in localStorage
             localStorage.setItem(`${previewId}_data`, e.target.result);
         };
@@ -892,12 +902,12 @@ function handleImageUpload(fileInput, previewId, previewImgId) {
 function loadImagePreviews() {
     const profileData = localStorage.getItem('profile-preview_data');
     const projectData = localStorage.getItem('project-preview_data');
-    
+
     if (profileData) {
         document.getElementById('profile-preview-img').src = profileData;
         document.getElementById('profile-preview').classList.remove('hidden');
     }
-    
+
     if (projectData) {
         document.getElementById('project-preview-img').src = projectData;
         document.getElementById('project-preview').classList.remove('hidden');
@@ -908,7 +918,7 @@ function loadImagePreviews() {
 function addTimelineItem() {
     const container = document.getElementById('timeline-items-container');
     const itemId = Date.now();
-    
+
     const timelineItem = document.createElement('div');
     timelineItem.className = 'timeline-item bg-gray-50 p-4 rounded-lg border';
     timelineItem.innerHTML = `
@@ -939,9 +949,9 @@ function addTimelineItem() {
             </div>
         </div>
     `;
-    
+
     container.appendChild(timelineItem);
-    
+
     // If in reorder mode, add drag handle and update sortable
     if (isReorderMode && sortableInstance) {
         const newItem = container.lastElementChild;
@@ -963,27 +973,27 @@ function toggleReorderMode() {
     const reorderBtn = document.getElementById('reorder-btn');
     const instructions = document.getElementById('reorder-instructions');
     const container = document.getElementById('timeline-items-container');
-    
+
     isReorderMode = !isReorderMode;
-    
+
     if (isReorderMode) {
         // Enable reorder mode
         reorderBtn.textContent = 'Save Order';
         reorderBtn.className = 'bg-green-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-700 transition duration-300';
         instructions.classList.remove('hidden');
         container.classList.add('reorder-mode');
-        
+
         // Initialize Sortable
         sortableInstance = new Sortable(container, {
             animation: 150,
             ghostClass: 'bg-blue-100',
             chosenClass: 'bg-blue-200',
             dragClass: 'bg-blue-300',
-            onEnd: function() {
+            onEnd: function () {
                 console.log('Timeline items reordered');
             }
         });
-        
+
         // Add drag handles to all timeline items
         document.querySelectorAll('.timeline-item').forEach(item => {
             if (!item.querySelector('.drag-handle')) {
@@ -995,20 +1005,20 @@ function toggleReorderMode() {
                 item.appendChild(dragHandle);
             }
         });
-        
+
     } else {
         // Disable reorder mode
         reorderBtn.textContent = 'Reorder';
         reorderBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300';
         instructions.classList.add('hidden');
         container.classList.remove('reorder-mode');
-        
+
         // Destroy Sortable instance
         if (sortableInstance) {
             sortableInstance.destroy();
             sortableInstance = null;
         }
-        
+
         // Remove drag handles
         document.querySelectorAll('.drag-handle').forEach(handle => {
             handle.remove();
@@ -1019,7 +1029,7 @@ function toggleReorderMode() {
 function loadTimelineItems(timelineData) {
     const container = document.getElementById('timeline-items-container');
     container.innerHTML = '';
-    
+
     if (timelineData && timelineData.length > 0) {
         timelineData.forEach(item => {
             const timelineItem = document.createElement('div');
@@ -1052,11 +1062,11 @@ function loadTimelineItems(timelineData) {
                     </div>
                 </div>
             `;
-            
+
             container.appendChild(timelineItem);
         });
     }
-    
+
     // If in reorder mode, reinitialize sortable
     if (isReorderMode && sortableInstance) {
         setTimeout(() => {
@@ -1066,11 +1076,11 @@ function loadTimelineItems(timelineData) {
                 ghostClass: 'bg-blue-100',
                 chosenClass: 'bg-blue-200',
                 dragClass: 'bg-blue-300',
-                onEnd: function() {
+                onEnd: function () {
                     console.log('Timeline items reordered');
                 }
             });
-            
+
             // Add drag handles
             document.querySelectorAll('.timeline-item').forEach(item => {
                 if (!item.querySelector('.drag-handle')) {
@@ -1092,7 +1102,7 @@ function handlePDFUpload(fileInput, urlInput) {
     if (file) {
         if (file.type === 'application/pdf') {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 // For PDF files, we'll store the data URL
                 // In a real application, you'd upload to a cloud storage service
                 urlInput.value = e.target.result;
@@ -1111,21 +1121,21 @@ function setupImageUploads() {
     const profileImageFile = document.getElementById('profile-image-file');
     const projectImageFile = document.getElementById('project-image-file');
     const resumeFile = document.getElementById('resume-file');
-    
+
     if (profileImageFile) {
-        profileImageFile.addEventListener('change', function() {
+        profileImageFile.addEventListener('change', function () {
             handleImageUpload(this, 'profile-preview', 'profile-preview-img');
         });
     }
-    
+
     if (projectImageFile) {
-        projectImageFile.addEventListener('change', function() {
+        projectImageFile.addEventListener('change', function () {
             handleImageUpload(this, 'project-preview', 'project-preview-img');
         });
     }
-    
+
     if (resumeFile) {
-        resumeFile.addEventListener('change', function() {
+        resumeFile.addEventListener('change', function () {
             handlePDFUpload(this, document.getElementById('resume-url'));
         });
     }
