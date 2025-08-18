@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    // remove repo name from path
+    const path = window.location.pathname.replace('/NishantGoradiaPortfolio', '');
+
+    if (path === '/admin') {
+      window.location.replace('/NishantGoradiaPortfolio/pages/admin.html');
+    } else {
+      // default fallback
+      window.location.replace('/NishantGoradiaPortfolio/index.html');
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
