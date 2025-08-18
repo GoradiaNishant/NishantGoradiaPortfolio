@@ -418,7 +418,13 @@ async function handleLogout() {
     try {
         await firebase.auth().signOut();
         console.log('✅ Logout successful');
-        window.location.href = '../pages/login.html';
+
+        const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        const baseHref = isLocalhost 
+            ? '/' 
+            : '/NishantGoradiaPortfolio/';
+
+        window.location.href = `${baseHref}pages/login.html`;
     } catch (error) {
         console.error('❌ Logout error:', error);
         alert('Error logging out. Please try again.');

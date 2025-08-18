@@ -25,7 +25,7 @@ function checkAuthenticationStatus() {
                 ? '/' 
                 : '/NishantGoradiaPortfolio/';
 
-            window.location.href = `${baseHref}pages/admin.html`;
+            window.location.href = `${baseHref}/admin`;
         } else {
             console.log('❌ User not authenticated, showing login form');
         }
