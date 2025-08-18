@@ -102,7 +102,19 @@ function setupAuthNavigation() {
             if (user) {
                 // User is logged in - show admin links
                 console.log('✅ User authenticated, showing admin links');
-                const adminPath = '/admin'; // Use clean URL
+                
+                // Get the correct admin path based on environment
+                const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
+                
+                let adminPath = '';
+                if (isGitHubPages) {
+                    adminPath = '/NishantGoradiaPortfolio/admin/';
+                } else if (isLocalhost) {
+                    adminPath = '/admin/';
+                } else {
+                    adminPath = '/admin/';
+                }
                 
                 if (adminLink) {
                     adminLink.classList.remove('hidden');
@@ -165,8 +177,24 @@ function setupSmoothScrolling() {
 
 // Function to render navigation bar HTML
 function renderNavigationBar(isProjectDetail = false) {
-    const basePath = isProjectDetail ? '../' : '';
-    const adminPath = '/admin'; // Use clean URL
+    // Detect if we're on GitHub Pages or localhost
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
+    
+    // Set the correct base path
+    let basePath = '';
+    if (isGitHubPages) {
+        // On GitHub Pages, always use the repository name as base path
+        basePath = '/NishantGoradiaPortfolio/';
+    } else if (isLocalhost) {
+        // On localhost, use relative paths
+        basePath = isProjectDetail ? '../' : '';
+    } else {
+        // Fallback for other environments
+        basePath = isProjectDetail ? '../' : '';
+    }
+    
+    const adminPath = basePath + 'admin/'; // Use the base path for admin
     
     return `
         <nav class="bg-white shadow-lg fixed w-full top-0 z-50" role="navigation" aria-label="Main navigation">
@@ -250,7 +278,19 @@ function updateAdminLinkVisibility() {
         if (user) {
             // User is logged in - show admin links
             console.log('✅ Showing admin links for authenticated user');
-            const adminPath = '/admin'; // Use clean URL
+            
+            // Get the correct admin path based on environment
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
+            
+            let adminPath = '';
+            if (isGitHubPages) {
+                adminPath = '/NishantGoradiaPortfolio/admin/';
+            } else if (isLocalhost) {
+                adminPath = '/admin/';
+            } else {
+                adminPath = '/admin/';
+            }
             
             if (adminLink) {
                 adminLink.classList.remove('hidden');

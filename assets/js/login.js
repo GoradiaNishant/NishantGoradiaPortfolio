@@ -19,7 +19,21 @@ function checkAuthenticationStatus() {
         if (user) {
             // User is signed in, redirect to admin
             console.log('✅ User already authenticated, redirecting to admin');
-            window.location.href = '/admin';
+            
+            // Get the correct admin path based on environment
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
+            
+            let adminPath = '';
+            if (isGitHubPages) {
+                adminPath = '/NishantGoradiaPortfolio/admin/';
+            } else if (isLocalhost) {
+                adminPath = '/admin/';
+            } else {
+                adminPath = '/admin/';
+            }
+            
+            window.location.href = adminPath;
         } else {
             console.log('❌ User not authenticated, showing login form');
         }
@@ -63,7 +77,20 @@ async function handleLoginFormSubmission(e) {
 
         // Redirect to admin page after short delay
         setTimeout(() => {
-            window.location.href = '/admin';
+            // Get the correct admin path based on environment
+            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
+            
+            let adminPath = '';
+            if (isGitHubPages) {
+                adminPath = '/NishantGoradiaPortfolio/admin/';
+            } else if (isLocalhost) {
+                adminPath = '/admin/';
+            } else {
+                adminPath = '/admin/';
+            }
+            
+            window.location.href = adminPath;
         }, 1000);
 
     } catch (error) {
