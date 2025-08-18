@@ -32,12 +32,12 @@ class Menu {
         const isProjectDetail = window.location.pathname.includes('project-detail');
         
         // Set paths based on current page
-        let homePath = '/NishantGoradiaPortfolio/';
-        let adminPath = '/NishantGoradiaPortfolio/admin.html';
+        let homePath = '/NishantGoradiaPortfolio/index.html';
+        let adminPath = '/NishantGoradiaPortfolio/pages/admin.html';
         
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            homePath = '/';
-            adminPath = '/admin.html';
+            homePath = '/index.html';
+            adminPath = '/pages/admin.html';
         }
         
         return `
