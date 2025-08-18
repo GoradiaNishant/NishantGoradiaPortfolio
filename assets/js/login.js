@@ -76,7 +76,7 @@ async function handleLoginFormSubmission(e) {
                 ? '/'
                 : '/NishantGoradiaPortfolio/';
 
-            window.location.href = `${baseHref}pages/admin.html`;
+            window.location.href = `${baseHref}/admin`;
 
         }, 1000);
 
