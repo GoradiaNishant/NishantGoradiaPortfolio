@@ -2,7 +2,7 @@
     "name": "Mobile Developer Portfolio",
     "short_name": "Portfolio",
     "description": "Professional mobile developer portfolio showcasing Flutter and React Native projects",
-    "start_url": "./",
+    "start_url": "/NishantGoradiaPortfolio/",
     "orientation": "portrait-primary",
     "categories": ["business", "productivity"],
     "lang": "en",
