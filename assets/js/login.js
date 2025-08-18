@@ -19,26 +19,7 @@ function checkAuthenticationStatus() {
         if (user) {
             // User is signed in, redirect to admin
             console.log('✅ User already authenticated, redirecting to admin');
-            
-            // Use navigation utilities if available, otherwise fallback
-            if (window.NavigationUtils) {
-                window.location.href = window.NavigationUtils.getPath('admin');
-            } else {
-                // Fallback for when navigation utilities aren't loaded yet
-                const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
-                
-                let adminPath = '';
-                if (isGitHubPages) {
-                    adminPath = '/NishantGoradiaPortfolio/admin/';
-                } else if (isLocalhost) {
-                    adminPath = '/admin/';
-                } else {
-                    adminPath = '/admin/';
-                }
-                
-                window.location.href = adminPath;
-            }
+            window.location.href = window.NavigationUtils.getPath('admin');
         } else {
             console.log('❌ User not authenticated, showing login form');
         }
@@ -82,25 +63,7 @@ async function handleLoginFormSubmission(e) {
 
         // Redirect to admin page after short delay
         setTimeout(() => {
-            // Use navigation utilities if available, otherwise fallback
-            if (window.NavigationUtils) {
-                window.location.href = window.NavigationUtils.getPath('admin');
-            } else {
-                // Fallback for when navigation utilities aren't loaded yet
-                const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-                const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
-                
-                let adminPath = '';
-                if (isGitHubPages) {
-                    adminPath = '/NishantGoradiaPortfolio/admin/';
-                } else if (isLocalhost) {
-                    adminPath = '/admin/';
-                } else {
-                    adminPath = '/admin/';
-                }
-                
-                window.location.href = adminPath;
-            }
+            window.location.href = window.NavigationUtils.getPath('admin');
         }, 1000);
 
     } catch (error) {

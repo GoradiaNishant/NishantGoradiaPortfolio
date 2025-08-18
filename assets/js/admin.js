@@ -44,7 +44,7 @@ function checkAuthentication() {
                             <a href="login.html" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Go to Login
                             </a>
-                            <a href="javascript:void(0)" onclick="window.NavigationUtils ? window.NavigationUtils.navigateTo('home') : window.location.href='/NishantGoradiaPortfolio/index.html'" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <a href="javascript:void(0)" onclick="window.NavigationUtils.navigateTo('home')" class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Back to Portfolio
                             </a>
                         </div>
@@ -408,26 +408,7 @@ async function handleLogout() {
     try {
         await firebase.auth().signOut();
         console.log('✅ Logout successful');
-        
-        // Use navigation utilities if available, otherwise fallback
-        if (window.NavigationUtils) {
-            window.location.href = window.NavigationUtils.getPath('login');
-        } else {
-            // Fallback for when navigation utilities aren't loaded yet
-            const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-            const isGitHubPages = window.location.hostname === 'goradianishant.github.io';
-            
-            let loginPath = '';
-            if (isGitHubPages) {
-                loginPath = '/NishantGoradiaPortfolio/pages/login.html';
-            } else if (isLocalhost) {
-                loginPath = '/pages/login.html';
-            } else {
-                loginPath = '/pages/login.html';
-            }
-            
-            window.location.href = loginPath;
-        }
+        window.location.href = window.NavigationUtils.getPath('login');
     } catch (error) {
         console.error('❌ Logout error:', error);
         alert('Error logging out. Please try again.');

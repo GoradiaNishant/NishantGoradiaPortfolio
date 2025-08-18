@@ -102,7 +102,7 @@
                     <span id="userEmail" class="text-sm text-white"></span>
                     <div class="flex space-x-2 sm:space-x-4">
                         <button id="logoutBtn" class="bg-red-600 text-white px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition duration-300 text-sm">Logout</button>
-                        <a href="javascript:void(0)" onclick="window.NavigationUtils ? window.NavigationUtils.navigateTo('home') : window.location.href='/NishantGoradiaPortfolio/index.html'" class="bg-white text-indigo-600 px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-indigo-100 transition duration-300 text-sm">View Portfolio</a>
+                        <a href="javascript:void(0)" onclick="window.NavigationUtils.navigateTo('home')" class="bg-white text-indigo-600 px-3 sm:px-4 py-2 rounded-lg font-semibold hover:bg-indigo-100 transition duration-300 text-sm">View Portfolio</a>
                     </div>
                 </div>
             </div>
@@ -462,7 +462,7 @@
                 <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">Preview Changes</h2>
                 <div class="text-center">
                     <p class="text-gray-600 mb-4">Click the button below to preview your portfolio with the current changes:</p>
-                    <a href="javascript:void(0)" onclick="window.NavigationUtils ? window.open(window.NavigationUtils.getPath('home'), '_blank') : window.open('/NishantGoradiaPortfolio/index.html', '_blank')" class="bg-indigo-600 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Open Portfolio Preview</a>
+                    <a href="javascript:void(0)" onclick="window.open(window.NavigationUtils.getPath('home'), '_blank')" class="bg-indigo-600 text-white px-6 sm:px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300">Open Portfolio Preview</a>
                 </div>
             </div>
         </div>
