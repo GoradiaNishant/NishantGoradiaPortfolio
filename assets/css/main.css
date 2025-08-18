@@ -5,8 +5,16 @@
 /* ===================================
    BASE STYLES
    =================================== */
+
+/* Disable overscroll/bounce */
+html, body {
+    overscroll-behavior: none;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
+    overscroll-behavior: none;
 }
 
 .smooth-scroll {
