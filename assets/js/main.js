@@ -208,12 +208,12 @@ function updateAboutSection(savedData) {
         }
     }
 
-    // Update skills in About section
-    const aboutSkillsContainer = document.getElementById('about-skills-container');
-    if (aboutSkillsContainer) {
+    // Update skills in Profile section (under profile image)
+    const profileSkillsContainer = document.getElementById('profile-skills-container');
+    if (profileSkillsContainer) {
         if (savedData.skillsList) {
             const skills = savedData.skillsList.split(',').map(skill => skill.trim());
-            aboutSkillsContainer.innerHTML = '';
+            profileSkillsContainer.innerHTML = '';
 
             const colors = [
                 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200',
@@ -229,12 +229,12 @@ function updateAboutSection(savedData) {
             skills.forEach((skill, index) => {
                 const colorClass = colors[index % colors.length];
                 const skillSpan = document.createElement('span');
-                skillSpan.className = `px-4 py-2 ${colorClass} rounded-full text-sm font-medium transition duration-300`;
+                skillSpan.className = `px-3 py-1 ${colorClass} rounded-full text-xs font-medium transition duration-300`;
                 skillSpan.textContent = skill;
-                aboutSkillsContainer.appendChild(skillSpan);
+                profileSkillsContainer.appendChild(skillSpan);
             });
         } else {
-            aboutSkillsContainer.innerHTML = '<p class="text-gray-500 text-sm">No skills data available.</p>';
+            profileSkillsContainer.innerHTML = '<p class="text-gray-500 text-xs">No skills data available.</p>';
         }
     }
 }

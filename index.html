@@ -208,9 +208,10 @@
             </div>
             
             <div class="relative">
-                <!-- Profile Image - Top Left on Desktop, Top Center on Mobile -->
-                <div class="lg:float-left lg:mr-8 lg:mb-4 flex justify-center lg:justify-start">
-                    <figure class="relative group">
+                <!-- Profile Image and Skills Container -->
+                <div class="lg:float-left lg:mr-8 lg:mb-4 flex flex-col items-center lg:items-start">
+                    <!-- Profile Image -->
+                    <figure class="relative group mb-6">
                         <div class="absolute -inset-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200 animate-pulse" aria-hidden="true"></div>
                         <div class="relative">
                             <img id="profile-image" src="https://picsum.photos/400/400" alt="Professional headshot of mobile developer" class="rounded-full w-64 h-64 lg:w-80 lg:h-80 object-cover shadow-2xl border-4 border-white transform hover:scale-105 transition duration-300">
@@ -218,6 +219,14 @@
                         </div>
                         <figcaption class="sr-only">Professional headshot</figcaption>
                     </figure>
+                    
+                    <!-- Core Skills Under Profile Image -->
+                    <div class="w-full max-w-sm">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3 text-center lg:text-left">Core Skills</h3>
+                        <div id="profile-skills-container" class="flex flex-wrap gap-2 justify-center lg:justify-start" role="list" aria-label="Technical skills">
+                            <!-- Skills will be loaded dynamically -->
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- About Content - Wraps around image on desktop, below on mobile -->
@@ -226,14 +235,6 @@
                         <div id="about-text-container" class="space-y-6">
                             <!-- About text will be loaded dynamically -->
                         </div>
-                        
-                        <!-- Dynamic Skills -->
-                        <section class="mt-8 pt-6 border-t border-gray-200" aria-labelledby="skills-heading">
-                            <h3 id="skills-heading" class="text-xl font-semibold text-gray-800 mb-4">Core Skills</h3>
-                            <div id="about-skills-container" class="flex flex-wrap gap-3" role="list" aria-label="Technical skills">
-                                <!-- Skills will be loaded dynamically -->
-                            </div>
-                        </section>
                     </div>
                 </article>
                 
@@ -248,8 +249,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">Career Journey</h2>
             <div class="relative">
-                <!-- Timeline line - hidden on mobile, visible on desktop -->
-                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-indigo-200"></div>
+                <!-- Timeline line - visible on all screen sizes -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-indigo-200"></div>
                 
                 <div id="timeline-container" class="space-y-4 md:space-y-8">
                     <!-- Timeline items will be loaded here -->
@@ -257,7 +258,6 @@
             </div>
         </div>
     </section>
-
 
 
     <!-- Projects Section -->
