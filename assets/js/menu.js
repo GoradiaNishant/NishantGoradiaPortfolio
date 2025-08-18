@@ -33,11 +33,11 @@ class Menu {
         
         // Set paths based on current page
         let homePath = '/NishantGoradiaPortfolio/';
-        let adminPath = '/NishantGoradiaPortfolio/admin/';
+        let adminPath = '/NishantGoradiaPortfolio/admin.html';
         
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             homePath = '/';
-            adminPath = '/admin/';
+            adminPath = '/admin.html';
         }
         
         return `

@@ -19,7 +19,7 @@ function checkAuthenticationStatus() {
         if (user) {
             // User is signed in, redirect to admin
             console.log('✅ User already authenticated, redirecting to admin');
-            window.location.href = '../admin/';
+            window.location.href = '../admin.html';
         } else {
             console.log('❌ User not authenticated, showing login form');
         }
@@ -63,7 +63,7 @@ async function handleLoginFormSubmission(e) {
 
         // Redirect to admin page after short delay
         setTimeout(() => {
-            window.location.href = '../admin/';
+            window.location.href = '../admin.html';
         }, 1000);
 
     } catch (error) {
