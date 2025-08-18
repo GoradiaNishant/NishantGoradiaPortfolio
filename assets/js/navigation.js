@@ -189,7 +189,7 @@ class Navigation {
     }
 }
 
-// Utility functions for other parts of the app
+// Make navigation utilities available immediately
 window.NavigationUtils = {
     // Get correct path for any page
     getPath(page) {
