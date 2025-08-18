@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script>
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const baseHref = isLocalhost 
-            ? '/' 
-            : 'https://goradianishant.github.io/NishantGoradiaPortfolio/';
-        document.write('<base href="' + baseHref + '">');
-      </script>
-    
+        function getBaseHref() {
+            const isLocalhost =
+                location.hostname === "localhost" || location.hostname === "127.0.0.1";
+            return isLocalhost ? "/" : "/NishantGoradiaPortfolio/";
+        }
+        document.write('<base href="' + getBaseHref() + '">');
+    </script>
+
     <!-- SEO Meta Tags for Admin (No Index) -->
     <title>Portfolio Admin Dashboard</title>
     <meta name="title" content="Portfolio Admin Dashboard">
@@ -35,7 +36,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../assets/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../assets/images/favicon/favicon-16x16.png">
     <link rel="manifest" href="../site.webmanifest">
-    
+
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,13 +83,13 @@
             document.head.appendChild(script);
         }
     </script>
-    <script src="../assets/js/image-cache.js"></script>
-    <script src="../assets/js/admin.js"></script>
-    <script src="../assets/js/admin-screenshots.js"></script>
-    <script src="../assets/js/admin-main.js"></script>
-    <link rel="stylesheet" href="../assets/css/admin.css">
-    <link rel="stylesheet" href="../assets/css/menu.css">
-    <script src="../assets/js/menu.js"></script>
+    <script src="assets/js/image-cache.js"></script>
+    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/admin-screenshots.js"></script>
+    <script src="assets/js/admin-main.js"></script>
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <link rel="stylesheet" href="assets/css/menu.css">
+    <script src="assets/js/menu.js"></script>
 </head>
 
 <body class="bg-gray-100">

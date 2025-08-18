@@ -240,12 +240,6 @@ app.get('/resume', (req, res) => {
     res.redirect('/#resume');
 });
 
-// Handle 404s gracefully - redirect to main page
-app.use((req, res) => {
-    console.log(`404 - Page not found: ${req.url}`);
-    res.redirect('/');
-});
-
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({ 
