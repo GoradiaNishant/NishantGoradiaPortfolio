@@ -50,6 +50,7 @@
     <link rel="dns-prefetch" href="//www.gstatic.com">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
 
+    <!-- Tailwind CSS - Development CDN (replace with build version for production) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -65,7 +66,7 @@
             console.error('❌ FirebaseDB not loaded from config file');
             // Try alternative path
             const script = document.createElement('script');
-            script.src = './config/firebase-config.js';
+            script.src = '../config/firebase-config.js';
             script.onerror = function () {
                 console.error('❌ Failed to load FirebaseDB from alternative path');
                 if (document.getElementById('loading-overlay')) {
@@ -83,13 +84,13 @@
             document.head.appendChild(script);
         }
     </script>
-    <script src="./assets/js/image-cache.js"></script>
-    <script src="./assets/js/admin.js"></script>
-    <script src="./assets/js/admin-screenshots.js"></script>
-    <script src="./assets/js/admin-main.js"></script>
-    <link rel="stylesheet" href="./assets/css/admin.css">
-    <link rel="stylesheet" href="./assets/css/menu.css">
-    <script src="./assets/js/menu.js"></script>
+    <script src="../assets/js/image-cache.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/admin-screenshots.js"></script>
+    <script src="../assets/js/admin-main.js"></script>
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="../assets/css/menu.css">
+    <script src="../assets/js/menu.js"></script>
 </head>
 
 <body class="bg-gray-100">

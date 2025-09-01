@@ -199,7 +199,8 @@ function createScreenshotCard(screenshot, index, loaded = true) {
                          data-original-src="${screenshot.url}"
                          data-description="${screenshot.description || ''}"
                          data-initial-orientation="${initialOrientation}"
-                         data-url="${screenshot.url}">
+                         data-url="${screenshot.url}"
+                         style="opacity: 0;">
                     
                     <!-- Failed State Indicator (shown when image fails) -->
                     <div class="absolute inset-0 bg-red-500 bg-opacity-20 flex items-center justify-center z-15 hidden" id="failed-${index}" style="background: rgba(239, 68, 68, 0.3);">
@@ -239,13 +240,29 @@ function createScreenshotCard(screenshot, index, loaded = true) {
             openScreenshotModal(screenshot);
         });
 
-        // Load the image with caching after a short delay
-        setTimeout(() => {
-            const img = card.querySelector('img');
-            if (img) {
-                loadScreenshotWithCache(img, index);
-            }
-        }, index * 200); // Stagger loading to avoid overwhelming the CDN
+                    // Load the image with caching after a short delay
+            setTimeout(() => {
+                const img = card.querySelector('img');
+                if (img) {
+                    loadScreenshotWithCache(img, index);
+                    
+                    // Additional mobile-specific handling
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        // Force check loading state after image loads on mobile
+                        img.addEventListener('load', () => {
+                            setTimeout(() => {
+                                const loadingElement = document.getElementById(`loading-${index}`);
+                                if (loadingElement && img.complete && img.naturalWidth > 0) {
+                                    loadingElement.style.display = 'none';
+                                    loadingElement.style.opacity = '0';
+                                    img.style.opacity = '1';
+                                }
+                            }, 100);
+                        });
+                    }
+                }
+            }, index * 200); // Stagger loading to avoid overwhelming the CDN
 
         return card;
     } catch (error) {
@@ -261,8 +278,10 @@ function handleScreenshotLoad(img, index, originalUrl) {
         console.log('Screenshot loaded successfully:', originalUrl);
         console.log('Image dimensions:', img.naturalWidth, 'x', img.naturalHeight);
 
-        // Remove opacity and show image
+        // Add loaded class and show image
+        img.classList.add('loaded');
         img.style.opacity = '1';
+        img.style.transition = 'opacity 0.3s ease';
 
         // Hide loading state
         hideLoadingState(index);
@@ -543,10 +562,24 @@ async function getCurrentProject() {
 function hideLoadingState(index) {
     const loadingElement = document.getElementById(`loading-${index}`);
     if (loadingElement) {
+        // Add hidden class for CSS targeting
+        loadingElement.classList.add('hidden');
         loadingElement.style.opacity = '0';
+        loadingElement.style.transition = 'opacity 0.3s ease';
+        
         setTimeout(() => {
             loadingElement.style.display = 'none';
         }, 300);
+        
+        // Force hide on mobile if needed
+        setTimeout(() => {
+            if (loadingElement.style.opacity !== '0') {
+                loadingElement.style.display = 'none';
+                loadingElement.style.opacity = '0';
+            }
+        }, 500);
+        
+        console.log(`✅ Loading state hidden for screenshot ${index}`);
     }
 }
 
@@ -555,6 +588,7 @@ function showLoadingState(index) {
     const loadingElement = document.getElementById(`loading-${index}`);
     const failedElement = document.getElementById(`failed-${index}`);
     if (loadingElement) {
+        loadingElement.classList.remove('hidden');
         loadingElement.style.display = 'flex';
         loadingElement.style.opacity = '1';
     }
@@ -608,3 +642,57 @@ async function retrySingleImage(index) {
     // Use the caching system to retry
     loadScreenshotWithCache(img, index);
 }
+
+// Force refresh loading states for mobile devices
+function forceRefreshLoadingStates() {
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+    
+    console.log('🔄 Force refreshing loading states for mobile');
+    
+    // Check all loading states and force hide if images are loaded
+    const loadingElements = document.querySelectorAll('[id^="loading-"]');
+    loadingElements.forEach(loadingElement => {
+        const index = loadingElement.id.replace('loading-', '');
+        const img = document.querySelector(`img[data-screenshot-index="${index}"]`);
+        
+        if (img && img.complete && img.naturalWidth > 0) {
+            // Image is loaded, force hide loading state
+            loadingElement.style.display = 'none';
+            loadingElement.style.opacity = '0';
+            img.style.opacity = '1';
+        }
+    });
+}
+
+// Desktop-specific loading state management
+function handleDesktopLoadingStates() {
+    const isDesktop = window.innerWidth > 768;
+    if (!isDesktop) return;
+    
+    console.log('🖥️ Handling desktop loading states');
+    
+    // Check all images and their loading states
+    const images = document.querySelectorAll('#screenshots-gallery img[data-screenshot-index]');
+    images.forEach(img => {
+        const index = img.dataset.screenshotIndex;
+        const loadingElement = document.getElementById(`loading-${index}`);
+        
+        if (img.complete && img.naturalWidth > 0) {
+            // Image is loaded, ensure loading state is hidden
+            if (loadingElement) {
+                loadingElement.classList.add('hidden');
+                loadingElement.style.display = 'none';
+                loadingElement.style.opacity = '0';
+            }
+            img.classList.add('loaded');
+            img.style.opacity = '1';
+        }
+    });
+}
+
+// Call force refresh after a delay to handle mobile loading issues
+setTimeout(forceRefreshLoadingStates, 3000);
+
+// Call desktop loading state handler after a delay
+setTimeout(handleDesktopLoadingStates, 2000);

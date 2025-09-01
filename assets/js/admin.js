@@ -651,21 +651,37 @@ async function addProject() {
         console.log('Development Process in project object:', project.developmentProcess);
         console.log('🔍 Tech Stack field element:', document.getElementById('project-tech-stack'));
         console.log('🔍 Development Process field element:', document.getElementById('project-development-process'));
+        
+        // Check project size before saving
+        const projectSize = new Blob([JSON.stringify(project)]).size;
+        console.log(`📊 Project size before optimization: ${projectSize} bytes (${(projectSize / 1024 / 1024).toFixed(2)} MB)`);
+        
+        if (projectSize > 800000) { // 800KB warning threshold
+            const shouldContinue = confirm(`⚠️ Warning: Project size is ${(projectSize / 1024 / 1024).toFixed(2)} MB. This might cause Firebase size limit issues.\n\nScreenshots will be automatically compressed, but you may want to reduce the number or quality of screenshots.\n\nContinue anyway?`);
+            if (!shouldContinue) {
+                hideLoading();
+                return;
+            }
+        }
+        
         console.log('🔍 Full project object being sent to Firebase:', JSON.stringify(project, null, 2));
 
         // Add to Firebase
         const success = await FirebaseDB.addProject(project);
 
         if (success) {
+            console.log('✅ Project added successfully');
+            
             // Clear form
             clearProjectForm();
 
             // Refresh projects list
-            loadProjects();
+            await loadProjects();
 
-            alert('Project added successfully to Firebase!');
+            alert('✅ Project added successfully! Your project is now live on your portfolio.');
         } else {
-            alert('Error adding project. Please try again.');
+            console.error('❌ Failed to add project');
+            alert('❌ Error adding project. Please try again.');
         }
     } catch (error) {
         console.error('❌ Error adding project:', error);
@@ -705,38 +721,123 @@ function clearProjectForm() {
     resetAddButton();
 }
 
+// Migrate projects to individual documents
+async function migrateProjects() {
+    const shouldMigrate = confirm('This will migrate your projects from the old single-document storage to individual project documents. This will solve the Firebase size limit issues.\n\nContinue with migration?');
+    
+    if (!shouldMigrate) return;
+    
+    showLoading('Migrating projects...');
+    
+    try {
+        const success = await FirebaseDB.migrateToIndividualDocuments();
+        
+        if (success) {
+            alert('✅ Migration completed successfully! Your projects are now stored as individual documents and should no longer have size limit issues.');
+            // Refresh the projects list
+            loadProjects();
+        } else {
+            alert('❌ Migration failed. Please try again or contact support.');
+        }
+    } catch (error) {
+        console.error('Migration error:', error);
+        alert('❌ Migration failed: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
 // Load existing projects
 async function loadProjects() {
-    const projects = await FirebaseDB.getProjects();
-    const projectsList = document.getElementById('projects-list');
+    try {
+        showLoading('Loading projects...');
+        const projects = await FirebaseDB.getProjects();
+        const projectsList = document.getElementById('projects-list');
 
-    console.log('Loading projects from Firebase:', projects);
-    console.log('Projects list element:', projectsList);
+        console.log('📁 Loading projects from Firebase:', projects);
+        console.log('📁 Projects list element:', projectsList);
 
-    projectsList.innerHTML = '';
+        projectsList.innerHTML = '';
 
-    if (projects.length === 0) {
-        projectsList.innerHTML = '<p class="text-gray-500 text-center py-4">No projects found. Add your first project above!</p>';
-        return;
-    }
-
-    projects.forEach((project, index) => {
-        const projectDiv = document.createElement('div');
-        projectDiv.className = 'border border-gray-200 rounded-lg p-4';
-        projectDiv.innerHTML = `
-            <div class="flex justify-between items-center">
-                <div>
-                    <h3 class="font-semibold text-lg">${project.name}</h3>
-                    <p class="text-gray-600">${project.description}</p>
+        if (projects.length === 0) {
+            projectsList.innerHTML = `
+                <div class="text-center py-8">
+                    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                    <p class="text-gray-500 text-lg">No projects found</p>
+                    <p class="text-gray-400">Add your first project using the form above!</p>
                 </div>
-                <div class="flex space-x-2">
-                    <button onclick="editProject(${index})" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Edit</button>
-                    <button onclick="deleteProject(${index})" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">Delete</button>
+            `;
+            return;
+        }
+
+        projects.forEach((project, index) => {
+            const projectDiv = document.createElement('div');
+            projectDiv.className = 'border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow';
+            
+            // Count screenshots
+            const screenshotCount = project.screenshots ? project.screenshots.length : 0;
+            
+            // Get project image preview
+            const projectImage = project.image || 'assets/images/project_image_placeholder.webp';
+            
+            projectDiv.innerHTML = `
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <img src="${projectImage}" alt="${project.name}" class="w-16 h-16 rounded-lg object-cover border border-gray-200">
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-lg text-gray-900">${project.name || 'Unnamed Project'}</h3>
+                                <p class="text-gray-600 text-sm mt-1">${project.description || 'No description'}</p>
+                                <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                                    <span>📸 ${screenshotCount} screenshots</span>
+                                    <span>🛠️ ${project.tech || 'No tech stack'}</span>
+                                    ${project.rating ? `<span>⭐ ${project.rating}/5</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="editProject(${index})" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    Edit
+                                </button>
+                                <button onclick="deleteProject(${index})" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            `;
+            projectsList.appendChild(projectDiv);
+        });
+        
+        console.log(`✅ Loaded ${projects.length} projects successfully`);
+    } catch (error) {
+        console.error('❌ Error loading projects:', error);
+        const projectsList = document.getElementById('projects-list');
+        projectsList.innerHTML = `
+            <div class="text-center py-8">
+                <svg class="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <p class="text-red-600 text-lg">Error loading projects</p>
+                <p class="text-gray-500">Please try refreshing the page</p>
+                <button onclick="loadProjects()" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    Retry
+                </button>
             </div>
         `;
-        projectsList.appendChild(projectDiv);
-    });
+    } finally {
+        hideLoading();
+    }
 }
 
 // Edit project
@@ -875,14 +976,28 @@ function resetAddButton() {
 
 // Delete project
 async function deleteProject(index) {
-    if (confirm('Are you sure you want to delete this project?')) {
+    const shouldDelete = confirm(`Are you sure you want to delete this project?\n\nThis action cannot be undone and will permanently remove the project from your portfolio.`);
+    
+    if (!shouldDelete) return;
+    
+    showLoading('Deleting project...');
+    
+    try {
         const success = await FirebaseDB.deleteProject(index);
+        
         if (success) {
-            loadProjects();
-            alert('Project deleted successfully from Firebase!');
+            console.log(`✅ Project ${index} deleted successfully`);
+            await loadProjects(); // Refresh the list
+            alert('✅ Project deleted successfully!');
         } else {
-            alert('Error deleting project. Please try again.');
+            console.error('❌ Failed to delete project');
+            alert('❌ Error deleting project. Please try again.');
         }
+    } catch (error) {
+        console.error('❌ Error deleting project:', error);
+        alert('❌ Error deleting project: ' + error.message);
+    } finally {
+        hideLoading();
     }
 }
 
