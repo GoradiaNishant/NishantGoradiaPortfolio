@@ -720,10 +720,10 @@ function loadDefaultContent() {
         portfolioTitle: 'Er. Nishant G.',
         aboutText: 'I\'m a passionate mobile developer with over 5 years of experience crafting innovative applications for iOS and Android platforms. Specializing in Flutter, Dart, and Firebase, I create seamless user experiences that combine cutting-edge technology with intuitive design.',
         skillsList: 'Flutter, Dart, Android, iOS, Firebase, Node.js, Spring Boot, CI/CD',
-        contactEmail: 'contact@example.com',
-        contactPhone: '+1 (555) 123-4567',
-        linkedinUrl: 'https://linkedin.com/in/example',
-        githubUrl: 'https://github.com/example'
+        contactEmail: 'goradianishant2000@gmail.com',
+        contactPhone: '+91 8320901498',
+        linkedinUrl: 'https://in.linkedin.com/in/nishant-goradiya-4b3090174',
+        githubUrl: 'https://github.com/GoradiaNishant'
     };
 
     // Update sections with default data
