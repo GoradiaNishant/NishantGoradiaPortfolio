@@ -145,13 +145,9 @@ Ready for Google Analytics, Google Search Console, and other tracking tools:
 ## 📞 Contact
 
 For collaboration opportunities or questions:
-- **Email**: [your-email@domain.com]
-- **LinkedIn**: [your-linkedin-profile]
-- **GitHub**: [your-github-profile]
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+- **Email**: goradianishant2000@gmail.com
+- **LinkedIn**: https://in.linkedin.com/in/nishant-goradiya-4b3090174
+- **GitHub**: https://github.com/GoradiaNishant
 
 ---
 
