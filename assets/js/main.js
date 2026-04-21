@@ -71,7 +71,7 @@ async function initializeApp() {
         }, 3000);
     } finally {
         hideLoading();
-        
+
         // Update admin link visibility after app loads
         if (window.CommonNav && window.CommonNav.updateAdminLinkVisibility) {
             setTimeout(() => {
@@ -356,7 +356,14 @@ function loadCareerTimeline(timelineData) {
 // ===================================
 async function loadProjects() {
     try {
-        const projects = await FirebaseDB.getProjects();
+        const rawProjects = await FirebaseDB.getProjects();
+
+        // Sort by viewIndex so index page always respects admin-set order.
+        // Projects without a viewIndex fall back to their array position.
+        const projects = rawProjects
+            .map((p, i) => ({ ...p, viewIndex: p.viewIndex !== undefined ? p.viewIndex : i }))
+            .sort((a, b) => a.viewIndex - b.viewIndex);
+
         const projectsContainer = document.getElementById('projects-container');
 
         if (projectsContainer) {
@@ -449,13 +456,13 @@ function loadProjectImageWithCache(img, index) {
 function handleProjectImageLoad(index) {
     const image = document.getElementById(`project-image-${index}`);
     const skeleton = document.getElementById(`skeleton-${index}`);
-    
+
     if (image) {
         image.classList.remove('loading');
         image.classList.add('loaded');
         image.style.opacity = '1';
     }
-    
+
     if (skeleton) {
         skeleton.style.display = 'none';
         skeleton.style.visibility = 'hidden';
@@ -466,14 +473,14 @@ function handleProjectImageLoad(index) {
 function handleProjectImageError(index) {
     const image = document.getElementById(`project-image-${index}`);
     const skeleton = document.getElementById(`skeleton-${index}`);
-    
+
     if (image) {
         image.classList.remove('loading');
         image.classList.add('error');
         image.style.opacity = '1';
         // Keep the fallback image (project_image_placeholder.webp) that's already set
     }
-    
+
     if (skeleton) {
         skeleton.style.display = 'none';
         skeleton.style.visibility = 'hidden';
@@ -758,7 +765,7 @@ function loadDefaultContent() {
         defaultProjects.forEach((project, index) => {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition duration-300 project-card';
-                            projectDiv.innerHTML = `
+            projectDiv.innerHTML = `
                     <div class="project-image-container">
                         <div class="project-image-skeleton" id="skeleton-${index}">
                             <div class="flex items-center justify-center h-full">
