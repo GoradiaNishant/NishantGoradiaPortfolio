@@ -7,6 +7,8 @@ let currentScreenshots = [];
 let draggedIndex = null;
 let sortableInstance = null;
 let isReorderMode = false;
+let projectSortableInstance = null;
+let isProjectReorderMode = false;
 
 // Initialize the page when DOM is loaded
 document.addEventListener('DOMContentLoaded', function () {
@@ -696,7 +698,15 @@ async function migrateProjects() {
 async function loadProjects() {
     try {
         showLoading('Loading projects...');
-        const projects = await FirebaseDB.getProjects();
+        const rawProjects = await FirebaseDB.getProjects();
+        
+        // Sort by viewIndex so admin page shows projects in the same order as the frontend.
+        // Preserve the original Firebase array index (_origIndex) so Edit/Delete still target the right document.
+        // Projects without a viewIndex fall back to their array position.
+        const projects = rawProjects
+            .map((p, i) => ({ ...p, _origIndex: i, viewIndex: p.viewIndex !== undefined ? p.viewIndex : i }))
+            .sort((a, b) => a.viewIndex - b.viewIndex);
+        
         const projectsList = document.getElementById('projects-list');
 
         console.log('📁 Loading projects from Firebase:', projects);
@@ -744,13 +754,13 @@ async function loadProjects() {
                                 </div>
                             </div>
                             <div class="flex space-x-2">
-                                <button onclick="editProject(${index})" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
+                                <button onclick="editProject(${project._origIndex})" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition-colors">
                                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                     Edit
                                 </button>
-                                <button onclick="deleteProject(${index})" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                                <button onclick="deleteProject(${project._origIndex})" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition-colors">
                                     <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>
@@ -782,6 +792,116 @@ async function loadProjects() {
         `;
     } finally {
         hideLoading();
+    }
+}
+
+// Render lightweight reorder cards for project reorder mode
+function renderProjectReorderCards(projects) {
+    const projectsList = document.getElementById('projects-list');
+    projectsList.innerHTML = '';
+
+    projects.forEach((project, index) => {
+        const card = document.createElement('div');
+        card.className = 'project-reorder-card border border-gray-200 rounded-lg p-3 mb-2 flex items-center space-x-3 bg-white cursor-move';
+        card.setAttribute('data-index', index);
+        card.innerHTML = `
+            <span class="drag-handle text-gray-400 text-xl select-none">⠿</span>
+            <span class="font-medium text-gray-800 flex-1">${project.name || 'Unnamed Project'}</span>
+        `;
+        projectsList.appendChild(card);
+    });
+}
+
+// Toggle project reorder mode
+async function toggleProjectReorderMode() {
+    const toggleBtn = document.getElementById('toggle-project-reorder-btn');
+    const saveOrderBtn = document.getElementById('save-order-btn');
+    const instructions = document.getElementById('project-reorder-instructions');
+    const projectsList = document.getElementById('projects-list');
+
+    if (!isProjectReorderMode) {
+        // --- Entering reorder mode ---
+        try {
+            const projects = await FirebaseDB.getProjects();
+
+            renderProjectReorderCards(projects);
+
+            projectSortableInstance = new Sortable(projectsList, {
+                handle: '.drag-handle',
+                animation: 150,
+                ghostClass: 'sortable-ghost'
+            });
+
+            saveOrderBtn.classList.remove('hidden');
+            instructions.classList.remove('hidden');
+
+            toggleBtn.textContent = 'Cancel Reorder';
+            toggleBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+            toggleBtn.classList.add('bg-gray-500', 'hover:bg-gray-600');
+
+            isProjectReorderMode = true;
+        } catch (error) {
+            console.error('❌ Error entering project reorder mode:', error);
+            alert('Error entering reorder mode. Please try again.');
+        }
+    } else {
+        // --- Exiting reorder mode (cancel) ---
+        if (projectSortableInstance) {
+            projectSortableInstance.destroy();
+            projectSortableInstance = null;
+        }
+
+        loadProjects();
+
+        saveOrderBtn.classList.add('hidden');
+        instructions.classList.add('hidden');
+
+        toggleBtn.textContent = 'Reorder Projects';
+        toggleBtn.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+        toggleBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+
+        isProjectReorderMode = false;
+    }
+}
+
+// Save the current DOM order of project reorder cards to Firebase
+async function saveProjectsOrderFromInputs() {
+    const saveOrderBtn = document.getElementById('save-order-btn');
+
+    // Read current DOM order and extract original Firebase array indices
+    const cards = document.querySelectorAll('.project-reorder-card');
+    const orderedIndices = Array.from(cards).map(card => parseInt(card.dataset.index));
+
+    // Show loading and disable save button to prevent duplicate submissions
+    showLoading('Saving project order...');
+    saveOrderBtn.disabled = true;
+
+    try {
+        // Fetch full project objects from Firebase
+        const projects = await FirebaseDB.getProjects();
+
+        // Build update promises: assign viewIndex equal to each card's DOM position
+        const updatePromises = orderedIndices.map((originalIndex, viewIndex) => {
+            const project = projects[originalIndex];
+            return FirebaseDB.updateProject(originalIndex, { ...project, viewIndex });
+        });
+
+        // Run all writes in parallel
+        await Promise.all(updatePromises);
+
+        // Success: hide loading, re-enable button, notify admin, exit reorder mode
+        hideLoading();
+        saveOrderBtn.disabled = false;
+        alert('Project order saved successfully!');
+        toggleProjectReorderMode();
+
+    } catch (error) {
+        console.error('❌ Error saving project order:', error);
+
+        // Failure: hide loading, re-enable button, show error, stay in reorder mode
+        hideLoading();
+        saveOrderBtn.disabled = false;
+        alert('Error saving project order. Please try again.');
     }
 }
 

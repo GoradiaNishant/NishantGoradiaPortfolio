@@ -391,7 +391,7 @@ async function loadProjects() {
                         <div class="p-4 flex flex-col flex-grow bg-gray-100">
                             <h3 class="text-xl font-semibold mb-2">${project.name}</h3>
                             <p class="text-gray-600 mb-4 flex-grow">${project.description}</p>
-                            <a href="pages/project-detail.html?project=${encodeURIComponent(project.name)}" class="text-indigo-600 font-semibold hover:underline mt-auto">View Details</a>
+                            <a href="pages/project-detail.html?project=${project.viewIndex}" class="text-indigo-600 font-semibold hover:underline mt-auto">View Details</a>
                         </div>
                     `;
                     projectsContainer.appendChild(projectDiv);
