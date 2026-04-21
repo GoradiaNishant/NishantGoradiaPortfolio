@@ -417,4 +417,110 @@ const FirebaseDB = {
         }
     },
 
+    // Export all data (portfolio + projects)
+    async exportAllData() {
+        try {
+            console.log('📦 Starting full export...');
+
+            // Get portfolio/main data
+            const portfolioDoc = await db.collection('portfolio').doc('main').get();
+            const portfolioData = portfolioDoc.exists ? portfolioDoc.data() : {};
+
+            // Get all individual project documents
+            const projectsSnapshot = await db.collection('projects').get();
+            const projects = [];
+
+            projectsSnapshot.docs.forEach(doc => {
+                const index = parseInt(doc.id.replace('project-', ''));
+                projects.push({
+                    _docId: doc.id,
+                    _index: index,
+                    ...doc.data()
+                });
+            });
+
+            // Sort by index to maintain order
+            projects.sort((a, b) => a._index - b._index);
+
+            // Also check legacy single-document storage as fallback
+            let legacyProjects = [];
+            if (projects.length === 0) {
+                const legacyDoc = await db.collection('portfolio').doc('projects').get();
+                if (legacyDoc.exists && legacyDoc.data().projects) {
+                    legacyProjects = legacyDoc.data().projects;
+                    console.log(`📁 Found ${legacyProjects.length} projects in legacy storage`);
+                }
+            }
+
+            const exportData = {
+                exportedAt: new Date().toISOString(),
+                version: '2.0',
+                portfolio: portfolioData,
+                projects: projects.length > 0 ? projects : legacyProjects
+            };
+
+            console.log(`✅ Export complete — portfolio fields: ${Object.keys(portfolioData).length}, projects: ${exportData.projects.length}`);
+            return exportData;
+
+        } catch (error) {
+            console.error('❌ Export failed:', error);
+            throw error;
+        }
+    },
+
+    // Import all data (portfolio + projects) — overwrites everything
+    async importAllData(backupData) {
+        try {
+            console.log('📥 Starting full import...');
+
+            // Restore portfolio/main data
+            if (backupData.portfolio && Object.keys(backupData.portfolio).length > 0) {
+                await db.collection('portfolio').doc('main').set(backupData.portfolio);
+                console.log('✅ Portfolio data restored');
+            }
+
+            // Restore projects
+            if (backupData.projects && backupData.projects.length > 0) {
+
+                // Step 1 — delete all existing project documents
+                const existingSnapshot = await db.collection('projects').get();
+                if (!existingSnapshot.empty) {
+                    const deleteBatch = db.batch();
+                    existingSnapshot.docs.forEach(doc => deleteBatch.delete(doc.ref));
+                    await deleteBatch.commit();
+                    console.log(`🗑️ Deleted ${existingSnapshot.size} existing project documents`);
+                }
+
+                // Step 2 — write restored projects in batches (Firestore limit: 500 per batch)
+                const BATCH_SIZE = 400;
+                let batchCount = 0;
+
+                for (let i = 0; i < backupData.projects.length; i += BATCH_SIZE) {
+                    const chunk = backupData.projects.slice(i, i + BATCH_SIZE);
+                    const writeBatch = db.batch();
+
+                    chunk.forEach((project, chunkIndex) => {
+                        const globalIndex = i + chunkIndex;
+                        // Strip internal export metadata fields before saving
+                        const { _docId, _index, ...cleanProject } = project;
+                        const docId = _docId || `project-${globalIndex}`;
+                        const projectRef = db.collection('projects').doc(docId);
+                        writeBatch.set(projectRef, cleanProject);
+                    });
+
+                    await writeBatch.commit();
+                    batchCount++;
+                    console.log(`✅ Batch ${batchCount} committed (${chunk.length} projects)`);
+                }
+
+                console.log(`✅ All ${backupData.projects.length} projects restored`);
+            }
+
+            return true;
+
+        } catch (error) {
+            console.error('❌ Import failed:', error);
+            throw error;
+        }
+    },
 }; 

@@ -349,6 +349,8 @@ function initializeTabs() {
     document.getElementById('cache').classList.add('hidden');
     document.getElementById('projects').classList.add('hidden');
     document.getElementById('preview').classList.add('hidden');
+    const backupEl = document.getElementById('backup');
+    if (backupEl) backupEl.classList.add('hidden');
 
     // Initialize cache stats if available
     setTimeout(() => {
@@ -356,61 +358,24 @@ function initializeTabs() {
     }, 1000);
 }
 
-// Load saved data on page load
-async function loadSavedData() {
-    showLoading('Loading admin panel...');
+// Show loading overlay
+function showLoading(message = 'Loading...') {
+    const overlay = document.getElementById('loading-overlay');
+    if (!overlay) return;
+    const loadingText = overlay.querySelector('.loading-text');
+    if (loadingText) loadingText.textContent = message;
+    overlay.style.display = 'flex';
+}
 
-    try {
-        // Initialize tabs first
-        initializeTabs();
-
-        showLoading('Loading portfolio data...');
-        const savedData = await FirebaseDB.getPortfolioData();
-
-        // Populate form fields with saved data
-        if (savedData.heroName) document.getElementById('hero-name').value = savedData.heroName;
-        if (savedData.heroTagline) document.getElementById('hero-tagline').value = savedData.heroTagline;
-        if (savedData.portfolioTitle) document.getElementById('portfolio-title').value = savedData.portfolioTitle;
-        if (savedData.profileImage) {
-            document.getElementById('profile-image').value = savedData.profileImage;
-            // If it's a data URL (uploaded image), show preview
-            if (savedData.profileImage.startsWith('data:image')) {
-                document.getElementById('profile-preview-img').src = savedData.profileImage;
-                document.getElementById('profile-preview').classList.remove('hidden');
-                localStorage.setItem('profile-preview_data', savedData.profileImage);
-            }
-        }
-        if (savedData.aboutText) document.getElementById('about-text').value = savedData.aboutText;
-        if (savedData.experienceYears) document.getElementById('experience-years').value = savedData.experienceYears;
-        if (savedData.skillsList) document.getElementById('skills-list').value = savedData.skillsList;
-        if (savedData.contactEmail) document.getElementById('contact-email').value = savedData.contactEmail;
-        if (savedData.contactPhone) document.getElementById('contact-phone').value = savedData.contactPhone;
-        if (savedData.linkedinUrl) document.getElementById('linkedin-url').value = savedData.linkedinUrl;
-        if (savedData.githubUrl) document.getElementById('github-url').value = savedData.githubUrl;
-        if (savedData.resumeUrl) document.getElementById('resume-url').value = savedData.resumeUrl;
-        if (savedData.careerTimeline) loadTimelineItems(savedData.careerTimeline);
-
-        // Setup image uploads and load previews
-        setupImageUploads();
-        loadImagePreviews();
-
-        // Load projects
-        showLoading('Loading projects...');
-        loadProjects();
-
-        // Debug: Check if projects are saved
-        const projects = await FirebaseDB.getProjects();
-        console.log('Projects in Firebase:', projects);
-        console.log('Number of projects:', projects.length);
-
-        console.log('✅ Admin panel loaded successfully');
-
-    } catch (error) {
-        console.error('❌ Error loading admin panel:', error);
-        alert('Error loading admin panel. Please refresh the page.');
-    } finally {
-        hideLoading();
-    }
+// Hide loading overlay
+function hideLoading() {
+    const overlay = document.getElementById('loading-overlay');
+    if (!overlay) return;
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        overlay.style.opacity = '1';
+    }, 300);
 }
 
 // Logout functionality
@@ -420,10 +385,7 @@ async function handleLogout() {
         console.log('✅ Logout successful');
 
         const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
-        const baseHref = isLocalhost 
-            ? '/' 
-            : '/NishantGoradiaPortfolio/';
-
+        const baseHref = isLocalhost ? '/' : '/NishantGoradiaPortfolio/';
         window.location.href = `${baseHref}pages/login.html`;
     } catch (error) {
         console.error('❌ Logout error:', error);
@@ -431,23 +393,6 @@ async function handleLogout() {
     }
 }
 
-// Show loading overlay
-function showLoading(message = 'Loading...') {
-    const overlay = document.getElementById('loading-overlay');
-    const loadingText = overlay.querySelector('.loading-text');
-    loadingText.textContent = message;
-    overlay.style.display = 'flex';
-}
-
-// Hide loading overlay
-function hideLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    overlay.style.opacity = '0';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-        overlay.style.opacity = '1';
-    }, 300);
-}
 
 // Cache management functions
 function clearImageCache() {
@@ -651,11 +596,11 @@ async function addProject() {
         console.log('Development Process in project object:', project.developmentProcess);
         console.log('🔍 Tech Stack field element:', document.getElementById('project-tech-stack'));
         console.log('🔍 Development Process field element:', document.getElementById('project-development-process'));
-        
+
         // Check project size before saving
         const projectSize = new Blob([JSON.stringify(project)]).size;
         console.log(`📊 Project size before optimization: ${projectSize} bytes (${(projectSize / 1024 / 1024).toFixed(2)} MB)`);
-        
+
         if (projectSize > 800000) { // 800KB warning threshold
             const shouldContinue = confirm(`⚠️ Warning: Project size is ${(projectSize / 1024 / 1024).toFixed(2)} MB. This might cause Firebase size limit issues.\n\nScreenshots will be automatically compressed, but you may want to reduce the number or quality of screenshots.\n\nContinue anyway?`);
             if (!shouldContinue) {
@@ -663,7 +608,7 @@ async function addProject() {
                 return;
             }
         }
-        
+
         console.log('🔍 Full project object being sent to Firebase:', JSON.stringify(project, null, 2));
 
         // Add to Firebase
@@ -671,7 +616,7 @@ async function addProject() {
 
         if (success) {
             console.log('✅ Project added successfully');
-            
+
             // Clear form
             clearProjectForm();
 
@@ -724,14 +669,14 @@ function clearProjectForm() {
 // Migrate projects to individual documents
 async function migrateProjects() {
     const shouldMigrate = confirm('This will migrate your projects from the old single-document storage to individual project documents. This will solve the Firebase size limit issues.\n\nContinue with migration?');
-    
+
     if (!shouldMigrate) return;
-    
+
     showLoading('Migrating projects...');
-    
+
     try {
         const success = await FirebaseDB.migrateToIndividualDocuments();
-        
+
         if (success) {
             alert('✅ Migration completed successfully! Your projects are now stored as individual documents and should no longer have size limit issues.');
             // Refresh the projects list
@@ -775,13 +720,13 @@ async function loadProjects() {
         projects.forEach((project, index) => {
             const projectDiv = document.createElement('div');
             projectDiv.className = 'border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow';
-            
+
             // Count screenshots
             const screenshotCount = project.screenshots ? project.screenshots.length : 0;
-            
+
             // Get project image preview
             const projectImage = project.image || 'assets/images/project_image_placeholder.webp';
-            
+
             projectDiv.innerHTML = `
                 <div class="flex items-start space-x-4">
                     <div class="flex-shrink-0">
@@ -818,7 +763,7 @@ async function loadProjects() {
             `;
             projectsList.appendChild(projectDiv);
         });
-        
+
         console.log(`✅ Loaded ${projects.length} projects successfully`);
     } catch (error) {
         console.error('❌ Error loading projects:', error);
@@ -977,14 +922,14 @@ function resetAddButton() {
 // Delete project
 async function deleteProject(index) {
     const shouldDelete = confirm(`Are you sure you want to delete this project?\n\nThis action cannot be undone and will permanently remove the project from your portfolio.`);
-    
+
     if (!shouldDelete) return;
-    
+
     showLoading('Deleting project...');
-    
+
     try {
         const success = await FirebaseDB.deleteProject(index);
-        
+
         if (success) {
             console.log(`✅ Project ${index} deleted successfully`);
             await loadProjects(); // Refresh the list
@@ -1259,5 +1204,86 @@ function setupImageUploads() {
         resumeFile.addEventListener('change', function () {
             handlePDFUpload(this, document.getElementById('resume-url'));
         });
+    }
+}
+
+// ===================================
+// BACKUP — EXPORT & IMPORT
+// ===================================
+
+async function exportFullData() {
+    try {
+        showLoading('Exporting data...');
+        const data = await FirebaseDB.exportAllData();
+        const json = JSON.stringify(data, null, 2);
+
+        // Build a downloadable file
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const date = new Date().toISOString().slice(0, 10);
+        a.href = url;
+        a.download = `portfolio-backup-${date}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        alert(`✅ Backup downloaded!\nFile: portfolio-backup-${date}.json\nProjects: ${(data.projects || []).length}`);
+    } catch (error) {
+        console.error('Export error:', error);
+        alert('❌ Export failed: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+
+async function importFullData() {
+    const fileInput = document.getElementById('import-file');
+    if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+        alert('⚠️ Please choose a JSON backup file first.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    if (!file.name.endsWith('.json')) {
+        alert('⚠️ Please select a valid .json backup file.');
+        return;
+    }
+
+    if (!confirm(`⚠️ WARNING: This will completely overwrite all current portfolio data and projects with the contents of:\n\n"${file.name}"\n\nThis action cannot be undone. Continue?`)) {
+        return;
+    }
+
+    try {
+        showLoading('Importing data — please wait...');
+
+        const text = await file.text();
+        let backupData;
+        try {
+            backupData = JSON.parse(text);
+        } catch (e) {
+            alert('❌ Invalid JSON file. Could not parse the backup.');
+            return;
+        }
+
+        // Basic structure check
+        if (!backupData.portfolio && !backupData.projects) {
+            alert('❌ This does not look like a valid portfolio backup file.');
+            return;
+        }
+
+        await FirebaseDB.importAllData(backupData);
+
+        // Reset the file input
+        fileInput.value = '';
+
+        alert(`✅ Import successful!\nPortfolio data restored.\nProjects restored: ${(backupData.projects || []).length}\n\nThe page will now reload.`);
+        window.location.reload();
+    } catch (error) {
+        console.error('Import error:', error);
+        alert('❌ Import failed: ' + error.message);
+    } finally {
+        hideLoading();
     }
 }
