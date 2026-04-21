@@ -14,7 +14,7 @@ async function loadProjectData() {
 
         if (projectIndex !== null) {
             const projects = await FirebaseDB.getProjects();
-            const project = projects[parseInt(projectIndex)];
+            const project = projects.find(p => p.viewIndex === parseInt(projectIndex));
 
             if (project) {
                 // Update hero section
