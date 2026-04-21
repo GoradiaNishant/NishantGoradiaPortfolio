@@ -7,14 +7,13 @@
    =================================== */
 
 /* Disable overscroll/bounce */
-html, body {
-    overscroll-behavior: none;
+html,
+body {
     overflow-x: hidden;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    overscroll-behavior: none;
 }
 
 /* ===================================
@@ -48,7 +47,7 @@ body {
         display: flex;
         flex-wrap: wrap;
     }
-    
+
     #profile-skills-container span {
         font-size: 0.75rem;
         padding: 0.25rem 0.5rem;
@@ -73,7 +72,7 @@ body {
     transition: box-shadow 0.3s ease;
     border: 2px solid transparent;
     background: linear-gradient(white, white) padding-box,
-                linear-gradient(60deg, #2245be, #b949c1) border-box;
+        linear-gradient(60deg, #2245be, #b949c1) border-box;
     border-radius: 8px;
 }
 
@@ -143,8 +142,13 @@ body {
 }
 
 @keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 .loading-overlay {
@@ -172,8 +176,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-text {
@@ -198,7 +207,8 @@ body {
 }
 
 /* Focus styles for better accessibility */
-a:focus, button:focus {
+a:focus,
+button:focus {
     outline: 2px solid #4f46e5;
     outline-offset: 2px;
 }
@@ -227,12 +237,15 @@ a:focus, button:focus {
     0% {
         transform: translate(0px, 0px) scale(1);
     }
+
     33% {
         transform: translate(30px, -50px) scale(1.1);
     }
+
     66% {
         transform: translate(-20px, 20px) scale(0.9);
     }
+
     100% {
         transform: translate(0px, 0px) scale(1);
     }
@@ -310,12 +323,12 @@ a:focus, button:focus {
     .no-print {
         display: none !important;
     }
-    
+
     body {
         background: white !important;
         color: black !important;
     }
-    
+
     .project-card {
         break-inside: avoid;
         box-shadow: none;
@@ -337,8 +350,9 @@ a:focus, button:focus {
     .project-card {
         border: 2px solid #000;
     }
-    
-    a:focus, button:focus {
+
+    a:focus,
+    button:focus {
         outline: 3px solid #000;
     }
 }
@@ -352,7 +366,7 @@ a:focus, button:focus {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-    
+
     .project-image:hover {
         transform: none;
     }
